@@ -239,6 +239,13 @@
                 background: var(--bad-bg);
                 color: var(--bad);
             }
+            .action-btn .usage-dot {
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
+                font-size: 9px;
+                color: var(--text3);
+            }
 
             #timer-screen {
                 background: var(--bg);
@@ -435,12 +442,18 @@
                 color: var(--bad);
             }
 
+            /* History items */
             .hist-item {
                 display: flex;
                 align-items: center;
                 gap: 12px;
                 padding: 12px 16px;
                 border-bottom: 1px solid var(--border);
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .hist-item:active {
+                background: var(--bg2);
             }
             .hist-icon {
                 font-size: 22px;
@@ -465,6 +478,7 @@
                 font-family: var(--display);
                 font-size: 14px;
                 font-weight: 700;
+                margin-right: 4px;
             }
             .hist-val.pos {
                 color: var(--good);
@@ -472,7 +486,13 @@
             .hist-val.neg {
                 color: var(--bad);
             }
+            .hist-edit-icon {
+                font-size: 14px;
+                color: var(--text3);
+                flex-shrink: 0;
+            }
 
+            /* Actions list */
             .act-item {
                 display: flex;
                 align-items: center;
@@ -506,6 +526,7 @@
                 padding: 4px 8px;
                 opacity: 0.6;
             }
+
             .add-form {
                 background: var(--bg2);
                 border: 1px solid var(--border);
@@ -562,6 +583,23 @@
                 opacity: 0.85;
                 transform: scale(0.98);
             }
+            .btn-secondary {
+                width: 100%;
+                background: none;
+                border: 1px solid var(--border2);
+                color: var(--text2);
+                border-radius: 12px;
+                padding: 13px;
+                font-family: var(--mono);
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.15s;
+                margin-top: 8px;
+                letter-spacing: 0.04em;
+            }
+            .btn-secondary:active {
+                opacity: 0.7;
+            }
 
             .empty {
                 text-align: center;
@@ -575,6 +613,94 @@
                 display: block;
                 margin-bottom: 12px;
                 opacity: 0.4;
+            }
+
+            /* Modal */
+            .modal-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 200;
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+            }
+            .modal {
+                background: var(--bg2);
+                border-radius: 20px 20px 0 0;
+                padding: 20px 20px 40px;
+                width: 100%;
+                max-width: 430px;
+                border-top: 1px solid var(--border2);
+            }
+            .modal h3 {
+                font-family: var(--display);
+                font-size: 16px;
+                font-weight: 400;
+                margin-bottom: 16px;
+                letter-spacing: -0.01em;
+            }
+            .modal label {
+                font-size: 10px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--text3);
+                display: block;
+                margin-bottom: 6px;
+                margin-top: 12px;
+            }
+            .modal input,
+            .modal select {
+                width: 100%;
+                background: var(--bg3);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 10px 12px;
+                color: var(--text);
+                font-family: var(--mono);
+                font-size: 13px;
+                outline: none;
+            }
+            .modal input:focus,
+            .modal select:focus {
+                border-color: var(--accent);
+            }
+            .modal-btns {
+                display: flex;
+                gap: 8px;
+                margin-top: 20px;
+            }
+            .modal-btns button {
+                flex: 1;
+                padding: 13px;
+                border-radius: 12px;
+                font-family: var(--mono);
+                font-size: 12px;
+                cursor: pointer;
+                border: none;
+                transition: all 0.15s;
+            }
+            .btn-modal-ok {
+                background: var(--accent);
+                color: #fff;
+            }
+            .btn-modal-del {
+                background: var(--bad-bg);
+                color: var(--bad);
+                border: 1px solid rgba(248, 108, 108, 0.3) !important;
+            }
+            .btn-modal-cancel {
+                background: var(--bg3);
+                color: var(--text2);
+            }
+
+            /* Footer */
+            .app-footer {
+                padding: 20px;
+                text-align: center;
+                font-size: 10px;
+                color: var(--text3);
+                letter-spacing: 0.06em;
             }
 
             @keyframes pulse {
@@ -778,6 +904,7 @@
                     <span class="eicon">📭</span>Сессии ещё не записаны.<br />Запусти
                     таймер, чтобы начать.
                 </div>
+                <div class="app-footer" id="analytics-footer"></div>
             </div>
 
             <!-- SETTINGS -->
@@ -795,6 +922,7 @@
                     </div>
                 </div>
                 <div id="actions-list"></div>
+
                 <div class="sec">Добавить действие</div>
                 <div class="add-form">
                     <label>Иконка (эмодзи)</label>
@@ -829,6 +957,30 @@
                         Добавить
                     </button>
                 </div>
+
+                <div class="sec">Добавить сессию вручную</div>
+                <div class="add-form">
+                    <label>Действие</label>
+                    <select id="m-action" style="margin-bottom: 12px"></select>
+                    <div class="row2">
+                        <div>
+                            <label>Начало</label
+                            ><input type="datetime-local" id="m-start" />
+                        </div>
+                        <div>
+                            <label>Окончание</label
+                            ><input type="datetime-local" id="m-end" />
+                        </div>
+                    </div>
+                    <button
+                        class="btn-add"
+                        onclick="addManualSession()"
+                        style="margin-top: 4px"
+                    >
+                        Добавить сессию
+                    </button>
+                </div>
+
                 <div style="height: 16px"></div>
                 <div class="sec">Опасная зона</div>
                 <div
@@ -858,6 +1010,7 @@
                         Сбросить
                     </button>
                 </div>
+                <div class="app-footer" id="settings-footer"></div>
             </div>
 
             <nav>
@@ -887,8 +1040,54 @@
                     >Действия
                 </button>
             </nav>
+
+            <!-- EDIT SESSION MODAL -->
+            <div
+                id="edit-modal"
+                class="modal-backdrop"
+                style="display: none"
+                onclick="closeEditModal(event)"
+            >
+                <div class="modal">
+                    <h3>Редактировать сессию</h3>
+                    <label>Действие</label>
+                    <select id="e-action"></select>
+                    <div
+                        style="
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 10px;
+                        "
+                    >
+                        <div>
+                            <label>Начало</label
+                            ><input type="datetime-local" id="e-start" />
+                        </div>
+                        <div>
+                            <label>Окончание</label
+                            ><input type="datetime-local" id="e-end" />
+                        </div>
+                    </div>
+                    <div class="modal-btns">
+                        <button class="btn-modal-del" onclick="deleteSession()">
+                            Удалить
+                        </button>
+                        <button
+                            class="btn-modal-cancel"
+                            onclick="closeEditModal()"
+                        >
+                            Отмена
+                        </button>
+                        <button class="btn-modal-ok" onclick="saveSession()">
+                            Сохранить
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
         <script>
+            const APP_VERSION = '1.2.0';
+
             const DEFAULT_ACTIONS = [
                 { id: 'a1', icon: '📚', name: 'Чтение', type: 'good', rate: 5 },
                 { id: 'a2', icon: '🏋️', name: 'Спорт', type: 'good', rate: 8 },
@@ -925,11 +1124,29 @@
             let timerState = null,
                 timerInterval = null,
                 asbInterval = null;
+            let editingId = null;
 
             const saveActions = () =>
                 localStorage.setItem('bal_actions', JSON.stringify(actions));
             const saveHistory = () =>
                 localStorage.setItem('bal_history', JSON.stringify(history));
+
+            // ── Usage count per action name ──
+            function usageCounts() {
+                const m = {};
+                history.forEach((h) => {
+                    m[h.name] = (m[h.name] || 0) + 1;
+                });
+                return m;
+            }
+
+            // ── Sorted actions by usage ──
+            function sortedActions() {
+                const counts = usageCounts();
+                return [...actions].sort(
+                    (a, b) => (counts[b.name] || 0) - (counts[a.name] || 0),
+                );
+            }
 
             // ── Timer ──
             function startTimer(actionId) {
@@ -998,22 +1215,25 @@
                 clearInterval(timerInterval);
                 clearInterval(asbInterval);
                 if (save && timerState.elapsed >= 10) {
-                    const minutes = timerState.elapsed / 60;
+                    const now = Date.now();
+                    const seconds = timerState.elapsed;
                     const delta = +(
-                        minutes *
+                        (seconds / 60) *
                         timerState.action.rate *
                         (timerState.action.type === 'good' ? 1 : -1)
                     ).toFixed(2);
                     history.unshift({
-                        id: Date.now(),
+                        id: now,
                         actionId: timerState.action.id,
                         icon: timerState.action.icon,
                         name: timerState.action.name,
                         type: timerState.action.type,
                         rate: timerState.action.rate,
-                        seconds: timerState.elapsed,
+                        seconds,
                         delta,
-                        ts: Date.now(),
+                        ts: now,
+                        tsStart: now - seconds * 1000,
+                        tsEnd: now,
                     });
                     saveHistory();
                 }
@@ -1047,12 +1267,160 @@
                     .forEach((b) => b.classList.remove('active'));
             }
 
+            // ── Manual session ──
+            function addManualSession() {
+                const actionId = document.getElementById('m-action').value;
+                const startVal = document.getElementById('m-start').value;
+                const endVal = document.getElementById('m-end').value;
+                if (!actionId || !startVal || !endVal) return;
+                const action = actions.find((a) => a.id === actionId);
+                if (!action) return;
+                const tsStart = new Date(startVal).getTime();
+                const tsEnd = new Date(endVal).getTime();
+                if (tsEnd <= tsStart) {
+                    alert('Окончание должно быть позже начала');
+                    return;
+                }
+                const seconds = Math.round((tsEnd - tsStart) / 1000);
+                const delta = +(
+                    (seconds / 60) *
+                    action.rate *
+                    (action.type === 'good' ? 1 : -1)
+                ).toFixed(2);
+                const entry = {
+                    id: Date.now(),
+                    actionId: action.id,
+                    icon: action.icon,
+                    name: action.name,
+                    type: action.type,
+                    rate: action.rate,
+                    seconds,
+                    delta,
+                    ts: tsEnd,
+                    tsStart,
+                    tsEnd,
+                };
+                history.unshift(entry);
+                history.sort((a, b) => b.ts - a.ts);
+                saveHistory();
+                renderHome();
+                document.getElementById('m-start').value = '';
+                document.getElementById('m-end').value = '';
+            }
+
+            // ── Edit session modal ──
+            function openEditModal(id) {
+                const h = history.find((x) => x.id === id);
+                if (!h) return;
+                editingId = id;
+
+                // Populate action select
+                const sel = document.getElementById('e-action');
+                sel.innerHTML = actions
+                    .map(
+                        (a) =>
+                            `<option value="${a.id}" ${a.id === h.actionId ? 'selected' : ''}>${a.icon} ${a.name}</option>`,
+                    )
+                    .join('');
+
+                // Timestamps — fallback for old entries without tsStart/tsEnd
+                const tsStart = h.tsStart || h.ts - h.seconds * 1000;
+                const tsEnd = h.tsEnd || h.ts;
+                document.getElementById('e-start').value =
+                    toDatetimeLocal(tsStart);
+                document.getElementById('e-end').value = toDatetimeLocal(tsEnd);
+
+                document.getElementById('edit-modal').style.display = 'flex';
+            }
+
+            function closeEditModal(e) {
+                if (e && e.target !== document.getElementById('edit-modal'))
+                    return;
+                document.getElementById('edit-modal').style.display = 'none';
+                editingId = null;
+            }
+
+            function saveSession() {
+                const actionId = document.getElementById('e-action').value;
+                const startVal = document.getElementById('e-start').value;
+                const endVal = document.getElementById('e-end').value;
+                if (!startVal || !endVal) return;
+                const action = actions.find((a) => a.id === actionId);
+                if (!action) return;
+                const tsStart = new Date(startVal).getTime();
+                const tsEnd = new Date(endVal).getTime();
+                if (tsEnd <= tsStart) {
+                    alert('Окончание должно быть позже начала');
+                    return;
+                }
+                const seconds = Math.round((tsEnd - tsStart) / 1000);
+                const delta = +(
+                    (seconds / 60) *
+                    action.rate *
+                    (action.type === 'good' ? 1 : -1)
+                ).toFixed(2);
+                const idx = history.findIndex((x) => x.id === editingId);
+                if (idx === -1) return;
+                history[idx] = {
+                    ...history[idx],
+                    actionId: action.id,
+                    icon: action.icon,
+                    name: action.name,
+                    type: action.type,
+                    rate: action.rate,
+                    seconds,
+                    delta,
+                    ts: tsEnd,
+                    tsStart,
+                    tsEnd,
+                };
+                history.sort((a, b) => b.ts - a.ts);
+                saveHistory();
+                document.getElementById('edit-modal').style.display = 'none';
+                editingId = null;
+                renderHome();
+                if (
+                    document
+                        .getElementById('analytics-screen')
+                        .classList.contains('active')
+                )
+                    renderAnalytics();
+            }
+
+            function deleteSession() {
+                if (!editingId) return;
+                if (!confirm('Удалить эту сессию?')) return;
+                history = history.filter((x) => x.id !== editingId);
+                saveHistory();
+                document.getElementById('edit-modal').style.display = 'none';
+                editingId = null;
+                renderHome();
+                if (
+                    document
+                        .getElementById('analytics-screen')
+                        .classList.contains('active')
+                )
+                    renderAnalytics();
+            }
+
+            function toDatetimeLocal(ts) {
+                const d = new Date(ts);
+                const pad = (n) => String(n).padStart(2, '0');
+                return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            }
+
             // ── Helpers ──
             function getTodayBalance() {
                 const today = new Date().toDateString();
                 return history
                     .filter((h) => new Date(h.ts).toDateString() === today)
                     .reduce((s, h) => s + h.delta, 0);
+            }
+
+            function renderFooter() {
+                document.querySelectorAll('.app-footer').forEach((el) => {
+                    el.textContent = `Баланс v${APP_VERSION}`;
+                });
             }
 
             // ── Screens ──
@@ -1084,14 +1452,20 @@
                 document.getElementById('home-minutes').textContent = history
                     .filter((h) => new Date(h.ts).toDateString() === today)
                     .reduce((s, h) => s + Math.round(h.seconds / 60), 0);
+
                 const grid = document.getElementById('home-actions');
                 grid.innerHTML = '';
-                actions.forEach((a) => {
+                const counts = usageCounts();
+                sortedActions().forEach((a) => {
                     const btn = document.createElement('div');
                     btn.className = 'action-btn ' + a.type;
-                    btn.innerHTML = `<span class="icon">${a.icon}</span><span class="name">${a.name}</span>
+                    const cnt = counts[a.name] || 0;
+                    btn.innerHTML = `
+      <span class="icon">${a.icon}</span>
+      <span class="name">${a.name}</span>
       <div class="rate">${a.type === 'good' ? '+' : '−'}${a.rate} ₿/мин</div>
-      <span class="corner">${a.type === 'good' ? '+' : '−'}</span>`;
+      <span class="corner">${a.type === 'good' ? '+' : '−'}</span>
+      ${cnt > 0 ? `<span class="usage-dot">${cnt}×</span>` : ''}`;
                     btn.onclick = () => startTimer(a.id);
                     grid.appendChild(btn);
                 });
@@ -1265,7 +1639,7 @@
                     return;
                 }
                 empty.style.display = 'none';
-                history.slice(0, 50).forEach((h) => {
+                history.slice(0, 100).forEach((h) => {
                     const min = Math.floor(h.seconds / 60),
                         sec = h.seconds % 60;
                     const dur = min > 0 ? `${min} мин ${sec} с` : `${sec} с`;
@@ -1277,9 +1651,15 @@
                     });
                     const div = document.createElement('div');
                     div.className = 'hist-item';
-                    div.innerHTML = `<div class="hist-icon">${h.icon}</div>
-      <div class="hist-info"><div class="hist-name">${h.name}</div><div class="hist-time">${dt} · ${dur}</div></div>
-      <div class="hist-val ${h.delta >= 0 ? 'pos' : 'neg'}">${h.delta >= 0 ? '+' : ''}${h.delta.toFixed(1)}</div>`;
+                    div.innerHTML = `
+      <div class="hist-icon">${h.icon}</div>
+      <div class="hist-info">
+        <div class="hist-name">${h.name}</div>
+        <div class="hist-time">${dt} · ${dur}</div>
+      </div>
+      <div class="hist-val ${h.delta >= 0 ? 'pos' : 'neg'}">${h.delta >= 0 ? '+' : ''}${h.delta.toFixed(1)}</div>
+      <div class="hist-edit-icon">✎</div>`;
+                    div.onclick = () => openEditModal(h.id);
                     list.appendChild(div);
                 });
             }
@@ -1288,19 +1668,31 @@
             function renderSettings() {
                 const list = document.getElementById('actions-list');
                 list.innerHTML = '';
+                const counts = usageCounts();
                 actions.forEach((a) => {
+                    const cnt = counts[a.name] || 0;
                     const div = document.createElement('div');
                     div.className = 'act-item';
-                    div.innerHTML = `<div class="act-item-icon">${a.icon}</div>
+                    div.innerHTML = `
+      <div class="act-item-icon">${a.icon}</div>
       <div class="act-item-info">
         <div class="act-item-name">${a.name}</div>
         <div class="act-item-rate" style="color:${a.type === 'good' ? 'var(--good)' : 'var(--bad)'}">
-          ${a.type === 'good' ? 'Полезное' : 'Вредное'} · ${a.type === 'good' ? '+' : '−'}${a.rate} ₿/мин
+          ${a.type === 'good' ? 'Полезное' : 'Вредное'} · ${a.type === 'good' ? '+' : '−'}${a.rate} ₿/мин${cnt ? ' · ' + cnt + '×' : ''}
         </div>
       </div>
       <button class="act-item-del" onclick="deleteAction('${a.id}')">✕</button>`;
                     list.appendChild(div);
                 });
+
+                // Populate manual session action select
+                const sel = document.getElementById('m-action');
+                sel.innerHTML = actions
+                    .map(
+                        (a) =>
+                            `<option value="${a.id}">${a.icon} ${a.name}</option>`,
+                    )
+                    .join('');
             }
 
             function addAction() {
@@ -1337,6 +1729,7 @@
 
             // ── Init ──
             renderHome();
+            renderFooter();
             if ('serviceWorker' in navigator)
                 navigator.serviceWorker.register('sw.js').catch(() => {});
         </script>
