@@ -892,7 +892,7 @@
                         ><span class="bl" id="rl-bad"></span>
                     </div>
                 </div>
-                <div class="sec">Баланс по дням (7 дней)</div>
+                <div class="sec">Баланс по дням</div>
                 <div class="chart-wrap card" style="padding: 16px">
                     <canvas id="chart"></canvas>
                 </div>
@@ -1226,9 +1226,10 @@
             let actions =
                 JSON.parse(localStorage.getItem('bal_actions') || 'null') ||
                 DEFAULT_ACTIONS;
+            const cutoff0 = Date.now() - 7 * 24 * 60 * 60 * 1000;
             let history = JSON.parse(
                 localStorage.getItem('bal_history') || '[]',
-            );
+            ).filter((h) => h.ts >= cutoff0);
             let timerState = null,
                 timerInterval = null,
                 asbInterval = null;
@@ -1236,8 +1237,11 @@
 
             const saveActions = () =>
                 localStorage.setItem('bal_actions', JSON.stringify(actions));
-            const saveHistory = () =>
+            const saveHistory = () => {
+                const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                history = history.filter((h) => h.ts >= cutoff);
                 localStorage.setItem('bal_history', JSON.stringify(history));
+            };
 
             // ── Usage count per action name ──
             function usageCounts() {
