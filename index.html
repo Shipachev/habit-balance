@@ -1,1737 +1,836 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-        <meta name="theme-color" content="#0d0d0f" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta
-            name="apple-mobile-web-app-status-bar-style"
-            content="black-translucent"
-        />
-        <title>Баланс</title>
-        <link rel="manifest" href="manifest.json" />
-        <link rel="apple-touch-icon" href="icon-192.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@300;400;700&display=swap"
-            rel="stylesheet"
-        />
-        <style>
-            :root {
-                --bg: #0d0d0f;
-                --bg2: #141418;
-                --bg3: #1c1c22;
-                --border: rgba(255, 255, 255, 0.07);
-                --border2: rgba(255, 255, 255, 0.12);
-                --text: #f0eff5;
-                --text2: #8885a0;
-                --text3: #4e4c5e;
-                --accent: #7c6ff7;
-                --good: #3ecf8e;
-                --bad: #f86c6c;
-                --good-bg: rgba(62, 207, 142, 0.1);
-                --bad-bg: rgba(248, 108, 108, 0.1);
-                --mono: 'JetBrains Mono', monospace;
-                --display: 'Unbounded', sans-serif;
-            }
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-                -webkit-tap-highlight-color: transparent;
-            }
-            html,
-            body {
-                height: 100%;
-                background: var(--bg);
-                color: var(--text);
-                font-family: var(--mono);
-                overflow: hidden;
-            }
-            #app {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                max-width: 430px;
-                margin: 0 auto;
-                position: relative;
-            }
-            .screen {
-                flex: 1;
-                overflow-y: auto;
-                overflow-x: hidden;
-                padding: 0 0 80px;
-                display: none;
-            }
-            .screen.active {
-                display: block;
-            }
-            .screen::-webkit-scrollbar {
-                display: none;
-            }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0d0d0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Баланс</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0f;--bg2:#141418;--bg3:#1c1c22;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#f0eff5;--text2:#8885a0;--text3:#4e4c5e;
+  --accent:#7c6ff7;--good:#3ecf8e;--bad:#f86c6c;
+  --good-bg:rgba(62,207,142,0.1);--bad-bg:rgba(248,108,108,0.1);
+  --mono:'JetBrains Mono',monospace;--display:'Unbounded',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--mono);overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 80px;display:none}
+.screen.active{display:block}
+.screen::-webkit-scrollbar{display:none}
 
-            nav {
-                position: fixed;
-                bottom: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                max-width: 430px;
-                background: var(--bg2);
-                border-top: 1px solid var(--border);
-                display: flex;
-                z-index: 100;
-                padding-bottom: env(safe-area-inset-bottom, 0);
-            }
-            nav button {
-                flex: 1;
-                padding: 14px 0 12px;
-                background: none;
-                border: none;
-                color: var(--text3);
-                font-size: 10px;
-                font-family: var(--mono);
-                letter-spacing: 0.04em;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
-                transition: color 0.2s;
-            }
-            nav button.active {
-                color: var(--accent);
-            }
-            nav button svg {
-                width: 20px;
-                height: 20px;
-                stroke: currentColor;
-                fill: none;
-                stroke-width: 1.5;
-                stroke-linecap: round;
-                stroke-linejoin: round;
-            }
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+nav button{flex:1;padding:14px 0 12px;background:none;border:none;color:var(--text3);font-size:10px;font-family:var(--mono);letter-spacing:.04em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .2s}
+nav button.active{color:var(--accent)}
+nav button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
-            .hdr {
-                padding: 52px 20px 20px;
-                display: flex;
-                align-items: flex-end;
-                justify-content: space-between;
-            }
-            .hdr-label {
-                font-family: var(--display);
-                font-size: 13px;
-                font-weight: 300;
-                letter-spacing: 0.12em;
-                text-transform: uppercase;
-                color: var(--text2);
-            }
-            .bal {
-                font-family: var(--display);
-                font-size: 36px;
-                font-weight: 700;
-                letter-spacing: -0.02em;
-            }
-            .bal.pos {
-                color: var(--good);
-            }
-            .bal.neg {
-                color: var(--bad);
-            }
-            .bal.zero {
-                color: var(--text2);
-            }
+.hdr{padding:52px 20px 20px;display:flex;align-items:flex-end;justify-content:space-between}
+.hdr-label{font-family:var(--display);font-size:13px;font-weight:300;letter-spacing:.12em;text-transform:uppercase;color:var(--text2)}
+.bal{font-family:var(--display);font-size:36px;font-weight:700;letter-spacing:-.02em}
+.bal.pos{color:var(--good)}.bal.neg{color:var(--bad)}.bal.zero{color:var(--text2)}
 
-            .card {
-                background: var(--bg2);
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                padding: 16px;
-                margin: 0 16px 10px;
-            }
-            .card-sm {
-                background: var(--bg2);
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                padding: 12px 14px;
-                margin: 0 16px 8px;
-            }
-            .sec {
-                font-size: 10px;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: var(--text3);
-                padding: 20px 20px 8px;
-                font-family: var(--mono);
-            }
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin:0 16px 10px}
+.card-sm{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:0 16px 8px}
+.sec{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:20px 20px 8px;font-family:var(--mono)}
 
-            .actions-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-                padding: 0 16px;
-            }
-            .action-btn {
-                background: var(--bg2);
-                border: 1px solid var(--border);
-                border-radius: 14px;
-                padding: 16px 12px;
-                cursor: pointer;
-                transition: all 0.15s;
-                position: relative;
-                overflow: hidden;
-                text-align: left;
-            }
-            .action-btn:active {
-                transform: scale(0.96);
-            }
-            .action-btn.good {
-                border-color: rgba(62, 207, 142, 0.2);
-            }
-            .action-btn.bad {
-                border-color: rgba(248, 108, 108, 0.15);
-            }
-            .action-btn .icon {
-                font-size: 28px;
-                display: block;
-                margin-bottom: 8px;
-            }
-            .action-btn .name {
-                font-family: var(--mono);
-                font-size: 12px;
-                font-weight: 500;
-                color: var(--text);
-                display: block;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .action-btn .rate {
-                font-size: 11px;
-                margin-top: 3px;
-                font-family: var(--mono);
-            }
-            .action-btn.good .rate {
-                color: var(--good);
-            }
-            .action-btn.bad .rate {
-                color: var(--bad);
-            }
-            .action-btn .corner {
-                position: absolute;
-                top: 8px;
-                right: 8px;
-                font-size: 8px;
-                letter-spacing: 0.06em;
-                padding: 2px 5px;
-                border-radius: 4px;
-                font-family: var(--mono);
-            }
-            .action-btn.good .corner {
-                background: var(--good-bg);
-                color: var(--good);
-            }
-            .action-btn.bad .corner {
-                background: var(--bad-bg);
-                color: var(--bad);
-            }
-            .action-btn .usage-dot {
-                position: absolute;
-                bottom: 8px;
-                right: 8px;
-                font-size: 9px;
-                color: var(--text3);
-            }
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px}
+.action-btn{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;text-align:left}
+.action-btn:active{transform:scale(0.96)}
+.action-btn.good{border-color:rgba(62,207,142,0.2)}
+.action-btn.bad{border-color:rgba(248,108,108,0.15)}
+.action-btn .icon{font-size:28px;display:block;margin-bottom:8px}
+.action-btn .name{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.action-btn .rate{font-size:11px;margin-top:3px;font-family:var(--mono)}
+.action-btn.good .rate{color:var(--good)}.action-btn.bad .rate{color:var(--bad)}
+.action-btn .corner{position:absolute;top:8px;right:8px;font-size:8px;letter-spacing:.06em;padding:2px 5px;border-radius:4px;font-family:var(--mono)}
+.action-btn.good .corner{background:var(--good-bg);color:var(--good)}
+.action-btn.bad .corner{background:var(--bad-bg);color:var(--bad)}
+.action-btn .usage-dot{position:absolute;bottom:8px;right:8px;font-size:9px;color:var(--text3)}
 
-            #timer-screen {
-                background: var(--bg);
-            }
-            .timer-wrap {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                padding: 40px 24px 100px;
-            }
-            .timer-icon {
-                font-size: 64px;
-                margin-bottom: 16px;
-            }
-            .timer-action-name {
-                font-family: var(--display);
-                font-size: 18px;
-                font-weight: 400;
-                color: var(--text);
-                margin-bottom: 6px;
-            }
-            .timer-type {
-                font-size: 10px;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                margin-bottom: 40px;
-            }
-            .timer-type.good {
-                color: var(--good);
-            }
-            .timer-type.bad {
-                color: var(--bad);
-            }
-            .timer-ring {
-                position: relative;
-                width: 220px;
-                height: 220px;
-                margin-bottom: 36px;
-            }
-            .timer-ring svg {
-                width: 100%;
-                height: 100%;
-                transform: rotate(-90deg);
-            }
-            .timer-ring .track {
-                fill: none;
-                stroke: var(--bg3);
-                stroke-width: 6;
-            }
-            .timer-ring .progress {
-                fill: none;
-                stroke-width: 6;
-                stroke-linecap: round;
-                transition: stroke-dashoffset 0.5s;
-            }
-            .timer-ring .progress.good {
-                stroke: var(--good);
-            }
-            .timer-ring .progress.bad {
-                stroke: var(--bad);
-            }
-            .timer-center {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-            .timer-clock {
-                font-family: var(--display);
-                font-size: 38px;
-                font-weight: 700;
-                letter-spacing: -0.02em;
-            }
-            .timer-earned {
-                font-size: 13px;
-                margin-top: 4px;
-                font-family: var(--mono);
-            }
-            .timer-earned.good {
-                color: var(--good);
-            }
-            .timer-earned.bad {
-                color: var(--bad);
-            }
-            .timer-bal-row {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                margin-bottom: 40px;
-                font-size: 12px;
-                color: var(--text2);
-            }
-            .timer-bal-val {
-                font-family: var(--display);
-                font-size: 20px;
-                font-weight: 700;
-            }
-            .timer-bal-val.pos {
-                color: var(--good);
-            }
-            .timer-bal-val.neg {
-                color: var(--bad);
-            }
-            .btn-stop {
-                background: var(--bad);
-                color: #fff;
-                border: none;
-                border-radius: 14px;
-                padding: 16px 48px;
-                font-family: var(--display);
-                font-size: 13px;
-                font-weight: 400;
-                letter-spacing: 0.08em;
-                cursor: pointer;
-                transition: all 0.15s;
-            }
-            .btn-stop:active {
-                transform: scale(0.96);
-                opacity: 0.85;
-            }
+#timer-screen{background:var(--bg)}
+.timer-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px 100px}
+.timer-icon{font-size:64px;margin-bottom:16px}
+.timer-action-name{font-family:var(--display);font-size:18px;font-weight:400;color:var(--text);margin-bottom:6px}
+.timer-type{font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:40px}
+.timer-type.good{color:var(--good)}.timer-type.bad{color:var(--bad)}
+.timer-ring{position:relative;width:220px;height:220px;margin-bottom:36px}
+.timer-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer-ring .track{fill:none;stroke:var(--bg3);stroke-width:6}
+.timer-ring .progress{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .5s}
+.timer-ring .progress.good{stroke:var(--good)}.timer-ring .progress.bad{stroke:var(--bad)}
+.timer-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-clock{font-family:var(--display);font-size:38px;font-weight:700;letter-spacing:-.02em}
+.timer-earned{font-size:13px;margin-top:4px;font-family:var(--mono)}
+.timer-earned.good{color:var(--good)}.timer-earned.bad{color:var(--bad)}
+.timer-bal-row{display:flex;align-items:center;gap:6px;margin-bottom:40px;font-size:12px;color:var(--text2)}
+.timer-bal-val{font-family:var(--display);font-size:20px;font-weight:700}
+.timer-bal-val.pos{color:var(--good)}.timer-bal-val.neg{color:var(--bad)}
+.btn-stop{background:var(--bad);color:#fff;border:none;border-radius:14px;padding:16px 48px;font-family:var(--display);font-size:13px;font-weight:400;letter-spacing:.08em;cursor:pointer;transition:all .15s}
+.btn-stop:active{transform:scale(0.96);opacity:.85}
 
-            .stat-row {
-                display: flex;
-                gap: 8px;
-                padding: 0 16px;
-                margin-bottom: 8px;
-            }
-            .stat-box {
-                flex: 1;
-                background: var(--bg2);
-                border: 1px solid var(--border);
-                border-radius: 14px;
-                padding: 14px;
-            }
-            .stat-box .sv {
-                font-family: var(--display);
-                font-size: 22px;
-                font-weight: 700;
-                letter-spacing: -0.02em;
-            }
-            .stat-box .sv.pos {
-                color: var(--good);
-            }
-            .stat-box .sv.neg {
-                color: var(--bad);
-            }
-            .stat-box .sl {
-                font-size: 10px;
-                letter-spacing: 0.06em;
-                text-transform: uppercase;
-                color: var(--text3);
-                margin-top: 4px;
-            }
-            .chart-wrap {
-                position: relative;
-                height: 120px;
-                margin: 0 16px 10px;
-            }
-            canvas#chart {
-                width: 100%;
-                height: 100%;
-            }
-            .ratio-bar-wrap {
-                padding: 0 16px;
-                margin-bottom: 16px;
-            }
-            .ratio-bar {
-                height: 6px;
-                border-radius: 3px;
-                background: var(--bad-bg);
-                overflow: hidden;
-                margin-top: 6px;
-            }
-            .ratio-bar-inner {
-                height: 100%;
-                background: var(--good);
-                border-radius: 3px;
-                transition: width 0.6s;
-            }
-            .ratio-labels {
-                display: flex;
-                justify-content: space-between;
-                font-size: 10px;
-                margin-top: 4px;
-            }
-            .ratio-labels .gl {
-                color: var(--good);
-            }
-            .ratio-labels .bl {
-                color: var(--bad);
-            }
+.stat-row{display:flex;gap:8px;padding:0 16px;margin-bottom:8px}
+.stat-box{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.stat-box .sv{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.02em}
+.stat-box .sv.pos{color:var(--good)}.stat-box .sv.neg{color:var(--bad)}
+.stat-box .sl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-top:4px}
+.chart-wrap{position:relative;height:120px;margin:0 16px 10px}
+canvas#chart{width:100%;height:100%}
+.ratio-bar-wrap{padding:0 16px;margin-bottom:16px}
+.ratio-bar{height:6px;border-radius:3px;background:var(--bad-bg);overflow:hidden;margin-top:6px}
+.ratio-bar-inner{height:100%;background:var(--good);border-radius:3px;transition:width .6s}
+.ratio-labels{display:flex;justify-content:space-between;font-size:10px;margin-top:4px}
+.ratio-labels .gl{color:var(--good)}.ratio-labels .bl{color:var(--bad)}
 
-            /* History items */
-            .hist-item {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px 16px;
-                border-bottom: 1px solid var(--border);
-                cursor: pointer;
-                transition: background 0.15s;
-            }
-            .hist-item:active {
-                background: var(--bg2);
-            }
-            .hist-icon {
-                font-size: 22px;
-                width: 36px;
-                flex-shrink: 0;
-                text-align: center;
-            }
-            .hist-info {
-                flex: 1;
-                min-width: 0;
-            }
-            .hist-name {
-                font-size: 12px;
-                font-weight: 500;
-            }
-            .hist-time {
-                font-size: 10px;
-                color: var(--text3);
-                margin-top: 2px;
-            }
-            .hist-val {
-                font-family: var(--display);
-                font-size: 14px;
-                font-weight: 700;
-                margin-right: 4px;
-            }
-            .hist-val.pos {
-                color: var(--good);
-            }
-            .hist-val.neg {
-                color: var(--bad);
-            }
-            .hist-edit-icon {
-                font-size: 14px;
-                color: var(--text3);
-                flex-shrink: 0;
-            }
+/* History items */
+.hist-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.hist-item:active{background:var(--bg2)}
+.hist-icon{font-size:22px;width:36px;flex-shrink:0;text-align:center}
+.hist-info{flex:1;min-width:0}
+.hist-name{font-size:12px;font-weight:500}
+.hist-time{font-size:10px;color:var(--text3);margin-top:2px}
+.hist-val{font-family:var(--display);font-size:14px;font-weight:700;margin-right:4px}
+.hist-val.pos{color:var(--good)}.hist-val.neg{color:var(--bad)}
+.hist-edit-icon{font-size:14px;color:var(--text3);flex-shrink:0}
 
-            /* Actions list */
-            .act-item {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px 16px;
-                border-bottom: 1px solid var(--border);
-            }
-            .act-item-icon {
-                font-size: 24px;
-                width: 36px;
-                text-align: center;
-            }
-            .act-item-info {
-                flex: 1;
-            }
-            .act-item-name {
-                font-size: 13px;
-                font-weight: 500;
-            }
-            .act-item-rate {
-                font-size: 11px;
-                color: var(--text2);
-                margin-top: 2px;
-            }
-            .act-item-del {
-                background: none;
-                border: none;
-                color: var(--bad);
-                font-size: 18px;
-                cursor: pointer;
-                padding: 4px 8px;
-                opacity: 0.6;
-            }
+/* Actions list */
+.act-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.act-item-icon{font-size:24px;width:36px;text-align:center}
+.act-item-info{flex:1}
+.act-item-name{font-size:13px;font-weight:500}
+.act-item-rate{font-size:11px;color:var(--text2);margin-top:2px}
+.act-item-edit{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:4px 6px;opacity:.7}
+.act-item-del{background:none;border:none;color:var(--bad);font-size:18px;cursor:pointer;padding:4px 8px;opacity:.6}
 
-            .add-form {
-                background: var(--bg2);
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                margin: 0 16px;
-                padding: 16px;
-            }
-            .add-form label {
-                font-size: 10px;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-                color: var(--text3);
-                display: block;
-                margin-bottom: 6px;
-            }
-            .add-form input,
-            .add-form select {
-                width: 100%;
-                background: var(--bg3);
-                border: 1px solid var(--border);
-                border-radius: 10px;
-                padding: 10px 12px;
-                color: var(--text);
-                font-family: var(--mono);
-                font-size: 13px;
-                outline: none;
-                margin-bottom: 12px;
-            }
-            .add-form input:focus,
-            .add-form select:focus {
-                border-color: var(--accent);
-            }
-            .add-form .row2 {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .btn-add {
-                width: 100%;
-                background: var(--accent);
-                color: #fff;
-                border: none;
-                border-radius: 12px;
-                padding: 14px;
-                font-family: var(--display);
-                font-size: 12px;
-                font-weight: 400;
-                letter-spacing: 0.08em;
-                cursor: pointer;
-                transition: all 0.15s;
-                margin-top: 4px;
-            }
-            .btn-add:active {
-                opacity: 0.85;
-                transform: scale(0.98);
-            }
-            .btn-secondary {
-                width: 100%;
-                background: none;
-                border: 1px solid var(--border2);
-                color: var(--text2);
-                border-radius: 12px;
-                padding: 13px;
-                font-family: var(--mono);
-                font-size: 12px;
-                cursor: pointer;
-                transition: all 0.15s;
-                margin-top: 8px;
-                letter-spacing: 0.04em;
-            }
-            .btn-secondary:active {
-                opacity: 0.7;
-            }
+.add-form{background:var(--bg2);border:1px solid var(--border);border-radius:16px;margin:0 16px;padding:16px}
+.add-form label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px}
+.add-form input,.add-form select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;margin-bottom:12px}
+.add-form input:focus,.add-form select:focus{border-color:var(--accent)}
+.add-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-add{width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px;font-family:var(--display);font-size:12px;font-weight:400;letter-spacing:.08em;cursor:pointer;transition:all .15s;margin-top:4px}
+.btn-add:active{opacity:.85;transform:scale(.98)}
+.btn-secondary{width:100%;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:12px;padding:13px;font-family:var(--mono);font-size:12px;cursor:pointer;transition:all .15s;margin-top:8px;letter-spacing:.04em}
+.btn-secondary:active{opacity:.7}
 
-            .empty {
-                text-align: center;
-                padding: 60px 20px;
-                color: var(--text3);
-                font-size: 12px;
-                line-height: 1.8;
-            }
-            .empty .eicon {
-                font-size: 40px;
-                display: block;
-                margin-bottom: 12px;
-                opacity: 0.4;
-            }
+.empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:12px;line-height:1.8}
+.empty .eicon{font-size:40px;display:block;margin-bottom:12px;opacity:.4}
 
-            /* Modal */
-            .modal-backdrop {
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.7);
-                z-index: 200;
-                display: flex;
-                align-items: flex-end;
-                justify-content: center;
-            }
-            .modal {
-                background: var(--bg2);
-                border-radius: 20px 20px 0 0;
-                padding: 20px 20px 40px;
-                width: 100%;
-                max-width: 430px;
-                border-top: 1px solid var(--border2);
-            }
-            .modal h3 {
-                font-family: var(--display);
-                font-size: 16px;
-                font-weight: 400;
-                margin-bottom: 16px;
-                letter-spacing: -0.01em;
-            }
-            .modal label {
-                font-size: 10px;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-                color: var(--text3);
-                display: block;
-                margin-bottom: 6px;
-                margin-top: 12px;
-            }
-            .modal input,
-            .modal select {
-                width: 100%;
-                background: var(--bg3);
-                border: 1px solid var(--border);
-                border-radius: 10px;
-                padding: 10px 12px;
-                color: var(--text);
-                font-family: var(--mono);
-                font-size: 13px;
-                outline: none;
-            }
-            .modal input:focus,
-            .modal select:focus {
-                border-color: var(--accent);
-            }
-            .modal-btns {
-                display: flex;
-                gap: 8px;
-                margin-top: 20px;
-            }
-            .modal-btns button {
-                flex: 1;
-                padding: 13px;
-                border-radius: 12px;
-                font-family: var(--mono);
-                font-size: 12px;
-                cursor: pointer;
-                border: none;
-                transition: all 0.15s;
-            }
-            .btn-modal-ok {
-                background: var(--accent);
-                color: #fff;
-            }
-            .btn-modal-del {
-                background: var(--bad-bg);
-                color: var(--bad);
-                border: 1px solid rgba(248, 108, 108, 0.3) !important;
-            }
-            .btn-modal-cancel {
-                background: var(--bg3);
-                color: var(--text2);
-            }
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 20px 40px;width:100%;max-width:430px;border-top:1px solid var(--border2)}
+.modal h3{font-family:var(--display);font-size:16px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em}
+.modal label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px;margin-top:14px}
+.modal label:first-of-type{margin-top:0}
+.modal input,.modal select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none}
+.modal input:focus,.modal select:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:8px;margin-top:20px}
+.modal-btns button{flex:1;padding:13px;border-radius:12px;font-family:var(--mono);font-size:12px;cursor:pointer;border:none;transition:all .15s}
+.btn-modal-ok{background:var(--accent);color:#fff}
+.btn-modal-del{background:var(--bad-bg);color:var(--bad);border:1px solid rgba(248,108,108,.3) !important}
+.btn-modal-cancel{background:var(--bg3);color:var(--text2)}
 
-            /* Footer */
-            .app-footer {
-                padding: 20px;
-                text-align: center;
-                font-size: 10px;
-                color: var(--text3);
-                letter-spacing: 0.06em;
-            }
+/* Footer */
+.app-footer{padding:20px;text-align:center;font-size:10px;color:var(--text3);letter-spacing:.06em}
 
-            @keyframes pulse {
-                0%,
-                100% {
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.6;
-                }
-            }
-            .pulsing {
-                animation: pulse 2s ease-in-out infinite;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="app">
-            <!-- HOME -->
-            <div class="screen active" id="home-screen">
-                <div class="hdr">
-                    <div>
-                        <div class="hdr-label">Баланс сегодня</div>
-                        <div class="bal zero" id="home-balance">0 ₿</div>
-                    </div>
-                    <div style="text-align: right">
-                        <div
-                            style="
-                                font-size: 10px;
-                                color: var(--text3);
-                                letter-spacing: 0.06em;
-                                text-transform: uppercase;
-                            "
-                        >
-                            Всего минут
-                        </div>
-                        <div
-                            style="
-                                font-family: var(--display);
-                                font-size: 22px;
-                                font-weight: 700;
-                                color: var(--text2);
-                            "
-                            id="home-minutes"
-                        >
-                            0
-                        </div>
-                    </div>
-                </div>
-                <div
-                    id="active-session-banner"
-                    style="display: none; margin: 0 16px 10px"
-                >
-                    <div
-                        class="card"
-                        style="
-                            border-color: var(--accent);
-                            display: flex;
-                            align-items: center;
-                            gap: 12px;
-                            cursor: pointer;
-                        "
-                        onclick="showTimer()"
-                    >
-                        <span id="asb-icon" style="font-size: 28px"></span>
-                        <div style="flex: 1">
-                            <div
-                                style="
-                                    font-size: 11px;
-                                    color: var(--accent);
-                                    letter-spacing: 0.06em;
-                                    text-transform: uppercase;
-                                "
-                                class="pulsing"
-                            >
-                                ● идёт сессия
-                            </div>
-                            <div
-                                id="asb-name"
-                                style="
-                                    font-size: 13px;
-                                    font-weight: 500;
-                                    margin-top: 2px;
-                                "
-                            ></div>
-                        </div>
-                        <div
-                            id="asb-time"
-                            style="
-                                font-family: var(--display);
-                                font-size: 18px;
-                                font-weight: 700;
-                            "
-                        ></div>
-                    </div>
-                </div>
-                <div class="sec">Выбери действие</div>
-                <div class="actions-grid" id="home-actions"></div>
-            </div>
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.pulsing{animation:pulse 2s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div id="app">
 
-            <!-- TIMER -->
-            <div class="screen" id="timer-screen">
-                <div class="timer-wrap">
-                    <div class="timer-icon" id="t-icon">📚</div>
-                    <div class="timer-action-name" id="t-name"></div>
-                    <div class="timer-type" id="t-type"></div>
-                    <div class="timer-ring">
-                        <svg viewBox="0 0 220 220">
-                            <circle class="track" cx="110" cy="110" r="98" />
-                            <circle
-                                class="progress good"
-                                id="t-ring"
-                                cx="110"
-                                cy="110"
-                                r="98"
-                                stroke-dasharray="616"
-                                stroke-dashoffset="616"
-                            />
-                        </svg>
-                        <div class="timer-center">
-                            <div class="timer-clock" id="t-clock">00:00</div>
-                            <div class="timer-earned good" id="t-earned">
-                                +0 ₿
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timer-bal-row">
-                        <span>Баланс:</span>
-                        <span class="timer-bal-val" id="t-bal">0</span>
-                        <span style="color: var(--text3)">₿</span>
-                    </div>
-                    <button class="btn-stop" onclick="stopTimer()">
-                        Завершить
-                    </button>
-                </div>
-            </div>
+<!-- HOME -->
+<div class="screen active" id="home-screen">
+  <div class="hdr">
+    <div>
+      <div class="hdr-label">Баланс сегодня</div>
+      <div class="bal zero" id="home-balance">0 ₿</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase">Всего минут</div>
+      <div style="font-family:var(--display);font-size:22px;font-weight:700;color:var(--text2)" id="home-minutes">0</div>
+    </div>
+  </div>
+  <div id="active-session-banner" style="display:none;margin:0 16px 10px">
+    <div class="card" style="border-color:var(--accent);display:flex;align-items:center;gap:12px;cursor:pointer" onclick="showTimer()">
+      <span id="asb-icon" style="font-size:28px"></span>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase" class="pulsing">● идёт сессия</div>
+        <div id="asb-name" style="font-size:13px;font-weight:500;margin-top:2px"></div>
+      </div>
+      <div id="asb-time" style="font-family:var(--display);font-size:18px;font-weight:700"></div>
+    </div>
+  </div>
+  <div class="sec">Выбери действие</div>
+  <div class="actions-grid" id="home-actions"></div>
+</div>
 
-            <!-- ANALYTICS -->
-            <div class="screen" id="analytics-screen">
-                <div style="padding: 52px 0 8px">
-                    <div
-                        style="
-                            padding: 0 20px 16px;
-                            font-family: var(--display);
-                            font-size: 22px;
-                            font-weight: 700;
-                        "
-                    >
-                        Аналитика
-                    </div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-box">
-                        <div class="sv pos" id="an-good-time">0</div>
-                        <div class="sl">мин полезных</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="sv neg" id="an-bad-time">0</div>
-                        <div class="sl">мин вредных</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="sv" id="an-balance">0</div>
-                        <div class="sl">баланс ₿</div>
-                    </div>
-                </div>
-                <div class="ratio-bar-wrap">
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: space-between;
-                            font-size: 11px;
-                            color: var(--text2);
-                        "
-                    >
-                        <span>Соотношение</span><span id="ratio-pct">—</span>
-                    </div>
-                    <div class="ratio-bar">
-                        <div
-                            class="ratio-bar-inner"
-                            id="ratio-bar"
-                            style="width: 0%"
-                        ></div>
-                    </div>
-                    <div class="ratio-labels">
-                        <span class="gl" id="rl-good"></span
-                        ><span class="bl" id="rl-bad"></span>
-                    </div>
-                </div>
-                <div class="sec">Баланс по дням (7 дней)</div>
-                <div class="chart-wrap card" style="padding: 16px">
-                    <canvas id="chart"></canvas>
-                </div>
-                <div class="sec">Топ действий по времени</div>
-                <div
-                    id="top-actions-list"
-                    style="padding: 0 16px; margin-bottom: 8px"
-                ></div>
-                <div class="sec">История сессий</div>
-                <div id="history-list"></div>
-                <div id="history-empty" class="empty" style="display: none">
-                    <span class="eicon">📭</span>Сессии ещё не записаны.<br />Запусти
-                    таймер, чтобы начать.
-                </div>
-                <div class="app-footer" id="analytics-footer"></div>
-            </div>
+<!-- TIMER -->
+<div class="screen" id="timer-screen">
+  <div class="timer-wrap">
+    <div class="timer-icon" id="t-icon">📚</div>
+    <div class="timer-action-name" id="t-name"></div>
+    <div class="timer-type" id="t-type"></div>
+    <div class="timer-ring">
+      <svg viewBox="0 0 220 220">
+        <circle class="track" cx="110" cy="110" r="98"/>
+        <circle class="progress good" id="t-ring" cx="110" cy="110" r="98" stroke-dasharray="616" stroke-dashoffset="616"/>
+      </svg>
+      <div class="timer-center">
+        <div class="timer-clock" id="t-clock">00:00</div>
+        <div class="timer-earned good" id="t-earned">+0 ₿</div>
+      </div>
+    </div>
+    <div class="timer-bal-row">
+      <span>Баланс:</span>
+      <span class="timer-bal-val" id="t-bal">0</span>
+      <span style="color:var(--text3)">₿</span>
+    </div>
+    <button class="btn-stop" onclick="stopTimer()">Завершить</button>
+  </div>
+</div>
 
-            <!-- SETTINGS -->
-            <div class="screen" id="settings-screen">
-                <div style="padding: 52px 0 8px">
-                    <div
-                        style="
-                            padding: 0 20px 16px;
-                            font-family: var(--display);
-                            font-size: 22px;
-                            font-weight: 700;
-                        "
-                    >
-                        Действия
-                    </div>
-                </div>
-                <div id="actions-list"></div>
+<!-- ANALYTICS -->
+<div class="screen" id="analytics-screen">
+  <div style="padding:52px 0 8px">
+    <div style="padding:0 20px 16px;font-family:var(--display);font-size:22px;font-weight:700">Аналитика</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-box"><div class="sv pos" id="an-good-time">0</div><div class="sl">мин полезных</div></div>
+    <div class="stat-box"><div class="sv neg" id="an-bad-time">0</div><div class="sl">мин вредных</div></div>
+    <div class="stat-box"><div class="sv" id="an-balance">0</div><div class="sl">баланс ₿</div></div>
+  </div>
+  <div class="ratio-bar-wrap">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2)">
+      <span>Соотношение</span><span id="ratio-pct">—</span>
+    </div>
+    <div class="ratio-bar"><div class="ratio-bar-inner" id="ratio-bar" style="width:0%"></div></div>
+    <div class="ratio-labels"><span class="gl" id="rl-good"></span><span class="bl" id="rl-bad"></span></div>
+  </div>
+  <div class="sec">Баланс по дням (7 дней)</div>
+  <div class="chart-wrap card" style="padding:16px"><canvas id="chart"></canvas></div>
+  <div class="sec">Топ действий по времени</div>
+  <div id="top-actions-list" style="padding:0 16px;margin-bottom:8px"></div>
+  <div class="sec">История сессий</div>
+  <div id="history-list"></div>
+  <div id="history-empty" class="empty" style="display:none">
+    <span class="eicon">📭</span>Сессии ещё не записаны.<br>Запусти таймер, чтобы начать.
+  </div>
+  <div class="app-footer" id="analytics-footer"></div>
+</div>
 
-                <div class="sec">Добавить действие</div>
-                <div class="add-form">
-                    <label>Иконка (эмодзи)</label>
-                    <input
-                        type="text"
-                        id="f-icon"
-                        placeholder="📚"
-                        maxlength="4"
-                    />
-                    <label>Название</label>
-                    <input type="text" id="f-name" placeholder="Чтение книги" />
-                    <div class="row2">
-                        <div>
-                            <label>Тип</label>
-                            <select id="f-type">
-                                <option value="good">Полезное</option>
-                                <option value="bad">Вредное</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>₿ / мин</label>
-                            <input
-                                type="number"
-                                id="f-rate"
-                                placeholder="5"
-                                min="1"
-                                max="99"
-                            />
-                        </div>
-                    </div>
-                    <button class="btn-add" onclick="addAction()">
-                        Добавить
-                    </button>
-                </div>
+<!-- SETTINGS -->
+<div class="screen" id="settings-screen">
+  <div style="padding:52px 0 8px">
+    <div style="padding:0 20px 16px;font-family:var(--display);font-size:22px;font-weight:700">Действия</div>
+  </div>
+  <div id="actions-list"></div>
 
-                <div class="sec">Добавить сессию вручную</div>
-                <div class="add-form">
-                    <label>Действие</label>
-                    <select id="m-action" style="margin-bottom: 12px"></select>
-                    <div class="row2">
-                        <div>
-                            <label>Начало</label
-                            ><input type="datetime-local" id="m-start" />
-                        </div>
-                        <div>
-                            <label>Окончание</label
-                            ><input type="datetime-local" id="m-end" />
-                        </div>
-                    </div>
-                    <button
-                        class="btn-add"
-                        onclick="addManualSession()"
-                        style="margin-top: 4px"
-                    >
-                        Добавить сессию
-                    </button>
-                </div>
+  <div class="sec">Добавить действие</div>
+  <div class="add-form">
+    <label>Иконка (эмодзи)</label>
+    <input type="text" id="f-icon" placeholder="📚" maxlength="4">
+    <label>Название</label>
+    <input type="text" id="f-name" placeholder="Чтение книги">
+    <div class="row2">
+      <div><label>Тип</label>
+        <select id="f-type"><option value="good">Полезное</option><option value="bad">Вредное</option></select>
+      </div>
+      <div><label>₿ / мин</label>
+        <input type="number" id="f-rate" placeholder="5" min="1" max="99">
+      </div>
+    </div>
+    <button class="btn-add" onclick="addAction()">Добавить</button>
+  </div>
 
-                <div style="height: 16px"></div>
-                <div class="sec">Опасная зона</div>
-                <div
-                    class="card-sm"
-                    style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                    "
-                >
-                    <span style="font-size: 12px; color: var(--text2)"
-                        >Сбросить всю историю</span
-                    >
-                    <button
-                        onclick="clearHistory()"
-                        style="
-                            background: var(--bad-bg);
-                            border: 1px solid rgba(248, 108, 108, 0.3);
-                            color: var(--bad);
-                            border-radius: 8px;
-                            padding: 6px 12px;
-                            font-family: var(--mono);
-                            font-size: 11px;
-                            cursor: pointer;
-                        "
-                    >
-                        Сбросить
-                    </button>
-                </div>
-                <div class="app-footer" id="settings-footer"></div>
-            </div>
+  <div class="sec">Добавить сессию вручную</div>
+  <div class="add-form">
+    <label>Действие</label>
+    <select id="m-action" style="margin-bottom:12px"></select>
+    <label>Начало</label>
+    <input type="datetime-local" id="m-start">
+    <label>Окончание</label>
+    <input type="datetime-local" id="m-end">
+    <button class="btn-add" onclick="addManualSession()" style="margin-top:4px">Добавить сессию</button>
+  </div>
 
-            <nav>
-                <button
-                    class="active"
-                    onclick="showScreen('home')"
-                    id="nav-home"
-                >
-                    <svg viewBox="0 0 24 24">
-                        <path d="M3 12L12 3l9 9" />
-                        <path d="M9 21V12h6v9" /></svg
-                    >Главная
-                </button>
-                <button onclick="showScreen('analytics')" id="nav-analytics">
-                    <svg viewBox="0 0 24 24">
-                        <rect x="3" y="12" width="4" height="9" />
-                        <rect x="10" y="7" width="4" height="14" />
-                        <rect x="17" y="3" width="4" height="18" /></svg
-                    >Аналитика
-                </button>
-                <button onclick="showScreen('settings')" id="nav-settings">
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
-                        /></svg
-                    >Действия
-                </button>
-            </nav>
+  <div style="height:16px"></div>
+  <div class="sec">Резервная копия</div>
+  <div class="card-sm" style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;gap:8px">
+      <button onclick="exportBackup()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:10px;font-family:var(--mono);font-size:11px;cursor:pointer">⬇ Скачать</button>
+      <label style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:8px;padding:10px;font-family:var(--mono);font-size:11px;cursor:pointer;text-align:center;letter-spacing:0;text-transform:none;margin:0">
+        ⬆ Восстановить
+        <input type="file" accept=".json" onchange="importBackup(event)" style="display:none">
+      </label>
+    </div>
+    <div style="font-size:10px;color:var(--text3);line-height:1.6">Сохраняет историю и список действий в JSON-файл.</div>
+  </div>
 
-            <!-- EDIT SESSION MODAL -->
-            <div
-                id="edit-modal"
-                class="modal-backdrop"
-                style="display: none"
-                onclick="closeEditModal(event)"
-            >
-                <div class="modal">
-                    <h3>Редактировать сессию</h3>
-                    <label>Действие</label>
-                    <select id="e-action"></select>
-                    <div
-                        style="
-                            display: grid;
-                            grid-template-columns: 1fr 1fr;
-                            gap: 10px;
-                        "
-                    >
-                        <div>
-                            <label>Начало</label
-                            ><input type="datetime-local" id="e-start" />
-                        </div>
-                        <div>
-                            <label>Окончание</label
-                            ><input type="datetime-local" id="e-end" />
-                        </div>
-                    </div>
-                    <div class="modal-btns">
-                        <button class="btn-modal-del" onclick="deleteSession()">
-                            Удалить
-                        </button>
-                        <button
-                            class="btn-modal-cancel"
-                            onclick="closeEditModal()"
-                        >
-                            Отмена
-                        </button>
-                        <button class="btn-modal-ok" onclick="saveSession()">
-                            Сохранить
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>
-            const APP_VERSION = '1.2.0';
+  <div style="height:16px"></div>
+  <div class="sec">Опасная зона</div>
+  <div class="card-sm" style="display:flex;align-items:center;justify-content:space-between">
+    <span style="font-size:12px;color:var(--text2)">Сбросить всю историю</span>
+    <button onclick="clearHistory()" style="background:var(--bad-bg);border:1px solid rgba(248,108,108,.3);color:var(--bad);border-radius:8px;padding:6px 12px;font-family:var(--mono);font-size:11px;cursor:pointer">Сбросить</button>
+  </div>
+  <div class="app-footer" id="settings-footer"></div>
+</div>
 
-            const DEFAULT_ACTIONS = [
-                { id: 'a1', icon: '📚', name: 'Чтение', type: 'good', rate: 5 },
-                { id: 'a2', icon: '🏋️', name: 'Спорт', type: 'good', rate: 8 },
-                {
-                    id: 'a3',
-                    icon: '💻',
-                    name: 'Обучение',
-                    type: 'good',
-                    rate: 6,
-                },
-                {
-                    id: 'a4',
-                    icon: '🧘',
-                    name: 'Медитация',
-                    type: 'good',
-                    rate: 4,
-                },
-                { id: 'a5', icon: '📱', name: 'Рилсы', type: 'bad', rate: 3 },
-                {
-                    id: 'a6',
-                    icon: '🌐',
-                    name: 'Веб-сёрфинг',
-                    type: 'bad',
-                    rate: 2,
-                },
-            ];
+<nav>
+  <button class="active" onclick="showScreen('home')" id="nav-home">
+    <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/></svg>Главная
+  </button>
+  <button onclick="showScreen('analytics')" id="nav-analytics">
+    <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>Аналитика
+  </button>
+  <button onclick="showScreen('settings')" id="nav-settings">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Действия
+  </button>
+</nav>
 
-            let actions =
-                JSON.parse(localStorage.getItem('bal_actions') || 'null') ||
-                DEFAULT_ACTIONS;
-            let history = JSON.parse(
-                localStorage.getItem('bal_history') || '[]',
-            );
-            let timerState = null,
-                timerInterval = null,
-                asbInterval = null;
-            let editingId = null;
+<!-- EDIT ACTION MODAL -->
+<div id="action-modal" class="modal-backdrop" style="display:none" onclick="closeActionModal(event)">
+  <div class="modal">
+    <h3>Редактировать действие</h3>
+    <label>Иконка</label>
+    <input type="text" id="ea-icon" maxlength="4">
+    <label>Название</label>
+    <input type="text" id="ea-name">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+      <div>
+        <label style="margin-top:0">Тип</label>
+        <select id="ea-type"><option value="good">Полезное</option><option value="bad">Вредное</option></select>
+      </div>
+      <div>
+        <label style="margin-top:0">₿ / мин</label>
+        <input type="number" id="ea-rate" min="1" max="99">
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeActionModal()">Отмена</button>
+      <button class="btn-modal-ok" onclick="saveAction()">Сохранить</button>
+    </div>
+  </div>
+</div>
 
-            const saveActions = () =>
-                localStorage.setItem('bal_actions', JSON.stringify(actions));
-            const saveHistory = () =>
-                localStorage.setItem('bal_history', JSON.stringify(history));
+<!-- EDIT SESSION MODAL -->
+<div id="edit-modal" class="modal-backdrop" style="display:none" onclick="closeEditModal(event)">
+  <div class="modal">
+    <h3>Редактировать сессию</h3>
+    <label>Действие</label>
+    <select id="e-action"></select>
+    <label>Начало</label>
+    <input type="datetime-local" id="e-start">
+    <label>Окончание</label>
+    <input type="datetime-local" id="e-end" style="margin-top:6px">
+    <div class="modal-btns">
+      <button class="btn-modal-del" onclick="deleteSession()">Удалить</button>
+      <button class="btn-modal-cancel" onclick="closeEditModal()">Отмена</button>
+      <button class="btn-modal-ok" onclick="saveSession()">Сохранить</button>
+    </div>
+  </div>
+</div>
 
-            // ── Usage count per action name ──
-            function usageCounts() {
-                const m = {};
-                history.forEach((h) => {
-                    m[h.name] = (m[h.name] || 0) + 1;
-                });
-                return m;
-            }
+</div>
+<script>
+let APP_VERSION = '…';
+fetch('sw.js').then(r=>r.text()).then(text=>{
+  const m = text.match(/const CACHE\s*=\s*['"]([^'"]+)['"]/);
+  if (m) APP_VERSION = m[1];
+  renderFooter();
+});
 
-            // ── Sorted actions by usage ──
-            function sortedActions() {
-                const counts = usageCounts();
-                return [...actions].sort(
-                    (a, b) => (counts[b.name] || 0) - (counts[a.name] || 0),
-                );
-            }
+const DEFAULT_ACTIONS = [
+  {id:'a1',icon:'📚',name:'Чтение',      type:'good',rate:5},
+  {id:'a2',icon:'🏋️',name:'Спорт',       type:'good',rate:8},
+  {id:'a3',icon:'💻',name:'Обучение',    type:'good',rate:6},
+  {id:'a4',icon:'🧘',name:'Медитация',   type:'good',rate:4},
+  {id:'a5',icon:'📱',name:'Рилсы',       type:'bad', rate:3},
+  {id:'a6',icon:'🌐',name:'Веб-сёрфинг', type:'bad', rate:2},
+];
 
-            // ── Timer ──
-            function startTimer(actionId) {
-                const action = actions.find((a) => a.id === actionId);
-                if (!action) return;
-                if (timerState) stopTimer(false);
-                timerState = { action, startTs: Date.now(), elapsed: 0 };
-                renderTimerUI();
-                showTimer();
-                tickTimer();
-                timerInterval = setInterval(tickTimer, 1000);
-                asbInterval = setInterval(updateASB, 1000);
-                updateASB();
-                document.getElementById('active-session-banner').style.display =
-                    'block';
-            }
+let actions = JSON.parse(localStorage.getItem('bal_actions')||'null') || DEFAULT_ACTIONS;
+let history = JSON.parse(localStorage.getItem('bal_history')||'[]');
+let timerState = null, timerInterval = null, asbInterval = null;
+let editingId = null;
 
-            function tickTimer() {
-                if (!timerState) return;
-                timerState.elapsed = Math.floor(
-                    (Date.now() - timerState.startTs) / 1000,
-                );
-                updateTimerDisplay();
-            }
+const saveActions = () => localStorage.setItem('bal_actions', JSON.stringify(actions));
+const saveHistory = () => localStorage.setItem('bal_history', JSON.stringify(history));
 
-            function updateTimerDisplay() {
-                if (!timerState) return;
-                const s = timerState.elapsed;
-                document.getElementById('t-clock').textContent =
-                    String(Math.floor(s / 60)).padStart(2, '0') +
-                    ':' +
-                    String(s % 60).padStart(2, '0');
-                const earned =
-                    (s / 60) *
-                    timerState.action.rate *
-                    (timerState.action.type === 'good' ? 1 : -1);
-                const earnEl = document.getElementById('t-earned');
-                earnEl.textContent =
-                    (earned >= 0 ? '+' : '') + earned.toFixed(1) + ' ₿';
-                earnEl.className = 'timer-earned ' + timerState.action.type;
-                const bal = getTodayBalance() + earned;
-                const balEl = document.getElementById('t-bal');
-                balEl.textContent = (bal >= 0 ? '+' : '') + bal.toFixed(1);
-                balEl.className = 'timer-bal-val ' + (bal >= 0 ? 'pos' : 'neg');
-                const ring = document.getElementById('t-ring');
-                ring.style.strokeDashoffset =
-                    2 * Math.PI * 98 * (1 - Math.min(s / 3600, 1));
-                ring.className = 'progress ' + timerState.action.type;
-            }
+// ── Usage count per action name ──
+function usageCounts() {
+  const m = {};
+  history.forEach(h => { m[h.name] = (m[h.name]||0) + 1; });
+  return m;
+}
 
-            function updateASB() {
-                if (!timerState) return;
-                const s = timerState.elapsed;
-                document.getElementById('asb-icon').textContent =
-                    timerState.action.icon;
-                document.getElementById('asb-name').textContent =
-                    timerState.action.name;
-                document.getElementById('asb-time').textContent =
-                    String(Math.floor(s / 60)).padStart(2, '0') +
-                    ':' +
-                    String(s % 60).padStart(2, '0');
-            }
+// ── Sorted actions by usage ──
+function sortedActions() {
+  const counts = usageCounts();
+  return [...actions].sort((a,b) => (counts[b.name]||0) - (counts[a.name]||0));
+}
 
-            function stopTimer(save = true) {
-                if (!timerState) return;
-                clearInterval(timerInterval);
-                clearInterval(asbInterval);
-                if (save && timerState.elapsed >= 10) {
-                    const now = Date.now();
-                    const seconds = timerState.elapsed;
-                    const delta = +(
-                        (seconds / 60) *
-                        timerState.action.rate *
-                        (timerState.action.type === 'good' ? 1 : -1)
-                    ).toFixed(2);
-                    history.unshift({
-                        id: now,
-                        actionId: timerState.action.id,
-                        icon: timerState.action.icon,
-                        name: timerState.action.name,
-                        type: timerState.action.type,
-                        rate: timerState.action.rate,
-                        seconds,
-                        delta,
-                        ts: now,
-                        tsStart: now - seconds * 1000,
-                        tsEnd: now,
-                    });
-                    saveHistory();
-                }
-                timerState = null;
-                timerInterval = null;
-                asbInterval = null;
-                document.getElementById('active-session-banner').style.display =
-                    'none';
-                showScreen('home');
-            }
+// ── Timer ──
+function startTimer(actionId) {
+  const action = actions.find(a => a.id === actionId);
+  if (!action) return;
+  if (timerState) stopTimer(false);
+  timerState = {action, startTs: Date.now(), elapsed: 0};
+  renderTimerUI();
+  showTimer();
+  tickTimer();
+  timerInterval = setInterval(tickTimer, 1000);
+  asbInterval   = setInterval(updateASB, 1000);
+  updateASB();
+  document.getElementById('active-session-banner').style.display = 'block';
+}
 
-            function renderTimerUI() {
-                const a = timerState.action;
-                document.getElementById('t-icon').textContent = a.icon;
-                document.getElementById('t-name').textContent = a.name;
-                const typeEl = document.getElementById('t-type');
-                typeEl.textContent =
-                    (a.type === 'good' ? 'полезное · +' : 'вредное · −') +
-                    a.rate +
-                    ' ₿/мин';
-                typeEl.className = 'timer-type ' + a.type;
-            }
+function tickTimer() {
+  if (!timerState) return;
+  timerState.elapsed = Math.floor((Date.now() - timerState.startTs) / 1000);
+  updateTimerDisplay();
+}
 
-            function showTimer() {
-                document
-                    .querySelectorAll('.screen')
-                    .forEach((s) => s.classList.remove('active'));
-                document.getElementById('timer-screen').classList.add('active');
-                document
-                    .querySelectorAll('nav button')
-                    .forEach((b) => b.classList.remove('active'));
-            }
+function updateTimerDisplay() {
+  if (!timerState) return;
+  const s = timerState.elapsed;
+  document.getElementById('t-clock').textContent =
+    String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  const earned = s/60 * timerState.action.rate * (timerState.action.type==='good'?1:-1);
+  const earnEl = document.getElementById('t-earned');
+  earnEl.textContent = (earned>=0?'+':'') + earned.toFixed(1) + ' ₿';
+  earnEl.className = 'timer-earned ' + timerState.action.type;
+  const bal = getTodayBalance() + earned;
+  const balEl = document.getElementById('t-bal');
+  balEl.textContent = (bal>=0?'+':'') + bal.toFixed(1);
+  balEl.className = 'timer-bal-val ' + (bal>=0?'pos':'neg');
+  const ring = document.getElementById('t-ring');
+  ring.style.strokeDashoffset = 2*Math.PI*98*(1-Math.min(s/3600,1));
+  ring.className = 'progress ' + timerState.action.type;
+}
 
-            // ── Manual session ──
-            function addManualSession() {
-                const actionId = document.getElementById('m-action').value;
-                const startVal = document.getElementById('m-start').value;
-                const endVal = document.getElementById('m-end').value;
-                if (!actionId || !startVal || !endVal) return;
-                const action = actions.find((a) => a.id === actionId);
-                if (!action) return;
-                const tsStart = new Date(startVal).getTime();
-                const tsEnd = new Date(endVal).getTime();
-                if (tsEnd <= tsStart) {
-                    alert('Окончание должно быть позже начала');
-                    return;
-                }
-                const seconds = Math.round((tsEnd - tsStart) / 1000);
-                const delta = +(
-                    (seconds / 60) *
-                    action.rate *
-                    (action.type === 'good' ? 1 : -1)
-                ).toFixed(2);
-                const entry = {
-                    id: Date.now(),
-                    actionId: action.id,
-                    icon: action.icon,
-                    name: action.name,
-                    type: action.type,
-                    rate: action.rate,
-                    seconds,
-                    delta,
-                    ts: tsEnd,
-                    tsStart,
-                    tsEnd,
-                };
-                history.unshift(entry);
-                history.sort((a, b) => b.ts - a.ts);
-                saveHistory();
-                renderHome();
-                document.getElementById('m-start').value = '';
-                document.getElementById('m-end').value = '';
-            }
+function updateASB() {
+  if (!timerState) return;
+  const s = timerState.elapsed;
+  document.getElementById('asb-icon').textContent = timerState.action.icon;
+  document.getElementById('asb-name').textContent = timerState.action.name;
+  document.getElementById('asb-time').textContent =
+    String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
 
-            // ── Edit session modal ──
-            function openEditModal(id) {
-                const h = history.find((x) => x.id === id);
-                if (!h) return;
-                editingId = id;
+function stopTimer(save=true) {
+  if (!timerState) return;
+  clearInterval(timerInterval); clearInterval(asbInterval);
+  if (save && timerState.elapsed >= 10) {
+    const now = Date.now();
+    const seconds = timerState.elapsed;
+    const delta = +(seconds/60 * timerState.action.rate * (timerState.action.type==='good'?1:-1)).toFixed(2);
+    history.unshift({
+      id: now, actionId: timerState.action.id,
+      icon: timerState.action.icon, name: timerState.action.name,
+      type: timerState.action.type, rate: timerState.action.rate,
+      seconds, delta,
+      ts: now,
+      tsStart: now - seconds * 1000,
+      tsEnd: now,
+    });
+    saveHistory();
+  }
+  timerState = null; timerInterval = null; asbInterval = null;
+  document.getElementById('active-session-banner').style.display = 'none';
+  showScreen('home');
+}
 
-                // Populate action select
-                const sel = document.getElementById('e-action');
-                sel.innerHTML = actions
-                    .map(
-                        (a) =>
-                            `<option value="${a.id}" ${a.id === h.actionId ? 'selected' : ''}>${a.icon} ${a.name}</option>`,
-                    )
-                    .join('');
+function renderTimerUI() {
+  const a = timerState.action;
+  document.getElementById('t-icon').textContent = a.icon;
+  document.getElementById('t-name').textContent = a.name;
+  const typeEl = document.getElementById('t-type');
+  typeEl.textContent = (a.type==='good'?'полезное · +':'вредное · −') + a.rate + ' ₿/мин';
+  typeEl.className = 'timer-type ' + a.type;
+}
 
-                // Timestamps — fallback for old entries without tsStart/tsEnd
-                const tsStart = h.tsStart || h.ts - h.seconds * 1000;
-                const tsEnd = h.tsEnd || h.ts;
-                document.getElementById('e-start').value =
-                    toDatetimeLocal(tsStart);
-                document.getElementById('e-end').value = toDatetimeLocal(tsEnd);
+function showTimer() {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('timer-screen').classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+}
 
-                document.getElementById('edit-modal').style.display = 'flex';
-            }
+// ── Manual session ──
+function addManualSession() {
+  const actionId = document.getElementById('m-action').value;
+  const startVal = document.getElementById('m-start').value;
+  const endVal   = document.getElementById('m-end').value;
+  if (!actionId || !startVal || !endVal) return;
+  const action = actions.find(a => a.id === actionId);
+  if (!action) return;
+  const tsStart = new Date(startVal).getTime();
+  const tsEnd   = new Date(endVal).getTime();
+  if (tsEnd <= tsStart) { alert('Окончание должно быть позже начала'); return; }
+  const seconds = Math.round((tsEnd - tsStart) / 1000);
+  const delta = +(seconds/60 * action.rate * (action.type==='good'?1:-1)).toFixed(2);
+  const entry = {
+    id: Date.now(), actionId: action.id,
+    icon: action.icon, name: action.name,
+    type: action.type, rate: action.rate,
+    seconds, delta, ts: tsEnd, tsStart, tsEnd,
+  };
+  history.unshift(entry);
+  history.sort((a,b) => b.ts - a.ts);
+  saveHistory();
+  renderHome();
+  document.getElementById('m-start').value = '';
+  document.getElementById('m-end').value = '';
+}
 
-            function closeEditModal(e) {
-                if (e && e.target !== document.getElementById('edit-modal'))
-                    return;
-                document.getElementById('edit-modal').style.display = 'none';
-                editingId = null;
-            }
+// ── Edit session modal ──
+function openEditModal(id) {
+  const h = history.find(x => x.id === id);
+  if (!h) return;
+  editingId = id;
 
-            function saveSession() {
-                const actionId = document.getElementById('e-action').value;
-                const startVal = document.getElementById('e-start').value;
-                const endVal = document.getElementById('e-end').value;
-                if (!startVal || !endVal) return;
-                const action = actions.find((a) => a.id === actionId);
-                if (!action) return;
-                const tsStart = new Date(startVal).getTime();
-                const tsEnd = new Date(endVal).getTime();
-                if (tsEnd <= tsStart) {
-                    alert('Окончание должно быть позже начала');
-                    return;
-                }
-                const seconds = Math.round((tsEnd - tsStart) / 1000);
-                const delta = +(
-                    (seconds / 60) *
-                    action.rate *
-                    (action.type === 'good' ? 1 : -1)
-                ).toFixed(2);
-                const idx = history.findIndex((x) => x.id === editingId);
-                if (idx === -1) return;
-                history[idx] = {
-                    ...history[idx],
-                    actionId: action.id,
-                    icon: action.icon,
-                    name: action.name,
-                    type: action.type,
-                    rate: action.rate,
-                    seconds,
-                    delta,
-                    ts: tsEnd,
-                    tsStart,
-                    tsEnd,
-                };
-                history.sort((a, b) => b.ts - a.ts);
-                saveHistory();
-                document.getElementById('edit-modal').style.display = 'none';
-                editingId = null;
-                renderHome();
-                if (
-                    document
-                        .getElementById('analytics-screen')
-                        .classList.contains('active')
-                )
-                    renderAnalytics();
-            }
+  // Populate action select
+  const sel = document.getElementById('e-action');
+  sel.innerHTML = actions.map(a =>
+    `<option value="${a.id}" ${a.id===h.actionId?'selected':''}>${a.icon} ${a.name}</option>`
+  ).join('');
 
-            function deleteSession() {
-                if (!editingId) return;
-                if (!confirm('Удалить эту сессию?')) return;
-                history = history.filter((x) => x.id !== editingId);
-                saveHistory();
-                document.getElementById('edit-modal').style.display = 'none';
-                editingId = null;
-                renderHome();
-                if (
-                    document
-                        .getElementById('analytics-screen')
-                        .classList.contains('active')
-                )
-                    renderAnalytics();
-            }
+  // Timestamps — fallback for old entries without tsStart/tsEnd
+  const tsStart = h.tsStart || (h.ts - h.seconds * 1000);
+  const tsEnd   = h.tsEnd   || h.ts;
+  document.getElementById('e-start').value = toDatetimeLocal(tsStart);
+  document.getElementById('e-end').value   = toDatetimeLocal(tsEnd);
 
-            function toDatetimeLocal(ts) {
-                const d = new Date(ts);
-                const pad = (n) => String(n).padStart(2, '0');
-                return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-            }
+  document.getElementById('edit-modal').style.display = 'flex';
+}
 
-            // ── Helpers ──
-            function getTodayBalance() {
-                const today = new Date().toDateString();
-                return history
-                    .filter((h) => new Date(h.ts).toDateString() === today)
-                    .reduce((s, h) => s + h.delta, 0);
-            }
+function closeEditModal(e) {
+  if (e && e.target !== document.getElementById('edit-modal')) return;
+  document.getElementById('edit-modal').style.display = 'none';
+  editingId = null;
+}
 
-            function renderFooter() {
-                document.querySelectorAll('.app-footer').forEach((el) => {
-                    el.textContent = `Баланс v${APP_VERSION}`;
-                });
-            }
+function saveSession() {
+  const actionId = document.getElementById('e-action').value;
+  const startVal = document.getElementById('e-start').value;
+  const endVal   = document.getElementById('e-end').value;
+  if (!startVal || !endVal) return;
+  const action = actions.find(a => a.id === actionId);
+  if (!action) return;
+  const tsStart = new Date(startVal).getTime();
+  const tsEnd   = new Date(endVal).getTime();
+  if (tsEnd <= tsStart) { alert('Окончание должно быть позже начала'); return; }
+  const seconds = Math.round((tsEnd - tsStart) / 1000);
+  const delta = +(seconds/60 * action.rate * (action.type==='good'?1:-1)).toFixed(2);
+  const idx = history.findIndex(x => x.id === editingId);
+  if (idx === -1) return;
+  history[idx] = { ...history[idx], actionId: action.id,
+    icon: action.icon, name: action.name, type: action.type, rate: action.rate,
+    seconds, delta, ts: tsEnd, tsStart, tsEnd };
+  history.sort((a,b) => b.ts - a.ts);
+  saveHistory();
+  document.getElementById('edit-modal').style.display = 'none';
+  editingId = null;
+  renderHome();
+  if (document.getElementById('analytics-screen').classList.contains('active')) renderAnalytics();
+}
 
-            // ── Screens ──
-            function showScreen(name) {
-                document
-                    .querySelectorAll('.screen')
-                    .forEach((s) => s.classList.remove('active'));
-                document
-                    .getElementById(name + '-screen')
-                    .classList.add('active');
-                document
-                    .querySelectorAll('nav button')
-                    .forEach((b) => b.classList.remove('active'));
-                document.getElementById('nav-' + name).classList.add('active');
-                if (name === 'home') renderHome();
-                if (name === 'analytics') renderAnalytics();
-                if (name === 'settings') renderSettings();
-            }
+function deleteSession() {
+  if (!editingId) return;
+  if (!confirm('Удалить эту сессию?')) return;
+  history = history.filter(x => x.id !== editingId);
+  saveHistory();
+  document.getElementById('edit-modal').style.display = 'none';
+  editingId = null;
+  renderHome();
+  if (document.getElementById('analytics-screen').classList.contains('active')) renderAnalytics();
+}
 
-            // ── Home ──
-            function renderHome() {
-                const bal = getTodayBalance();
-                const balEl = document.getElementById('home-balance');
-                balEl.textContent =
-                    (bal > 0 ? '+' : '') + bal.toFixed(1) + ' ₿';
-                balEl.className =
-                    'bal ' + (bal > 0 ? 'pos' : bal < 0 ? 'neg' : 'zero');
-                const today = new Date().toDateString();
-                document.getElementById('home-minutes').textContent = history
-                    .filter((h) => new Date(h.ts).toDateString() === today)
-                    .reduce((s, h) => s + Math.round(h.seconds / 60), 0);
+function toDatetimeLocal(ts) {
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
-                const grid = document.getElementById('home-actions');
-                grid.innerHTML = '';
-                const counts = usageCounts();
-                sortedActions().forEach((a) => {
-                    const btn = document.createElement('div');
-                    btn.className = 'action-btn ' + a.type;
-                    const cnt = counts[a.name] || 0;
-                    btn.innerHTML = `
+// ── Helpers ──
+function getTodayBalance() {
+  const today = new Date().toDateString();
+  return history.filter(h=>new Date(h.ts).toDateString()===today).reduce((s,h)=>s+h.delta,0);
+}
+
+function renderFooter() {
+  document.querySelectorAll('.app-footer').forEach(el => {
+    el.textContent = `Баланс v${APP_VERSION}`;
+  });
+}
+
+// ── Screens ──
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(name+'-screen').classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+  if (name==='home') renderHome();
+  if (name==='analytics') renderAnalytics();
+  if (name==='settings') renderSettings();
+}
+
+// ── Home ──
+function renderHome() {
+  const bal = getTodayBalance();
+  const balEl = document.getElementById('home-balance');
+  balEl.textContent = (bal>0?'+':'') + bal.toFixed(1) + ' ₿';
+  balEl.className = 'bal ' + (bal>0?'pos':bal<0?'neg':'zero');
+  const today = new Date().toDateString();
+  document.getElementById('home-minutes').textContent =
+    history.filter(h=>new Date(h.ts).toDateString()===today).reduce((s,h)=>s+Math.round(h.seconds/60),0);
+
+  const grid = document.getElementById('home-actions');
+  grid.innerHTML = '';
+  const counts = usageCounts();
+  sortedActions().forEach(a => {
+    const btn = document.createElement('div');
+    btn.className = 'action-btn ' + a.type;
+    const cnt = counts[a.name] || 0;
+    btn.innerHTML = `
       <span class="icon">${a.icon}</span>
       <span class="name">${a.name}</span>
-      <div class="rate">${a.type === 'good' ? '+' : '−'}${a.rate} ₿/мин</div>
-      <span class="corner">${a.type === 'good' ? '+' : '−'}</span>
+      <div class="rate">${a.type==='good'?'+':'−'}${a.rate} ₿/мин</div>
+      <span class="corner">${a.type==='good'?'+':'−'}</span>
       ${cnt > 0 ? `<span class="usage-dot">${cnt}×</span>` : ''}`;
-                    btn.onclick = () => startTimer(a.id);
-                    grid.appendChild(btn);
-                });
-            }
+    btn.onclick = () => startTimer(a.id);
+    grid.appendChild(btn);
+  });
+}
 
-            // ── Analytics ──
-            function renderAnalytics() {
-                const goodTime = history
-                    .filter((h) => h.type === 'good')
-                    .reduce((s, h) => s + h.seconds, 0);
-                const badTime = history
-                    .filter((h) => h.type === 'bad')
-                    .reduce((s, h) => s + h.seconds, 0);
-                const total = goodTime + badTime;
-                const balance = history.reduce((s, h) => s + h.delta, 0);
-                document.getElementById('an-good-time').textContent =
-                    Math.round(goodTime / 60);
-                document.getElementById('an-bad-time').textContent = Math.round(
-                    badTime / 60,
-                );
-                const bEl = document.getElementById('an-balance');
-                bEl.textContent =
-                    (balance >= 0 ? '+' : '') + balance.toFixed(1);
-                bEl.className = 'sv ' + (balance >= 0 ? 'pos' : 'neg');
-                const pct =
-                    total > 0 ? Math.round((goodTime / total) * 100) : 0;
-                document.getElementById('ratio-pct').textContent =
-                    total > 0 ? pct + '% полезных' : '—';
-                document.getElementById('ratio-bar').style.width = pct + '%';
-                document.getElementById('rl-good').textContent =
-                    Math.round(goodTime / 60) + ' мин';
-                document.getElementById('rl-bad').textContent =
-                    Math.round(badTime / 60) + ' мин';
-                renderChart();
-                renderTopActions();
-                renderHistory();
-            }
+// ── Analytics ──
+function renderAnalytics() {
+  const goodTime = history.filter(h=>h.type==='good').reduce((s,h)=>s+h.seconds,0);
+  const badTime  = history.filter(h=>h.type==='bad' ).reduce((s,h)=>s+h.seconds,0);
+  const total = goodTime + badTime;
+  const balance = history.reduce((s,h)=>s+h.delta,0);
+  document.getElementById('an-good-time').textContent = Math.round(goodTime/60);
+  document.getElementById('an-bad-time').textContent  = Math.round(badTime/60);
+  const bEl = document.getElementById('an-balance');
+  bEl.textContent = (balance>=0?'+':'') + balance.toFixed(1);
+  bEl.className = 'sv ' + (balance>=0?'pos':'neg');
+  const pct = total>0 ? Math.round(goodTime/total*100) : 0;
+  document.getElementById('ratio-pct').textContent = total>0 ? pct+'% полезных' : '—';
+  document.getElementById('ratio-bar').style.width = pct+'%';
+  document.getElementById('rl-good').textContent = Math.round(goodTime/60)+' мин';
+  document.getElementById('rl-bad').textContent  = Math.round(badTime/60)+' мин';
+  renderChart(); renderTopActions(); renderHistory();
+}
 
-            function renderChart() {
-                const days = Array.from({ length: 7 }, (_, i) => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - (6 - i));
-                    const key = d.toDateString();
-                    return {
-                        label: d.toLocaleDateString('ru', { weekday: 'short' }),
-                        bal: history
-                            .filter(
-                                (h) => new Date(h.ts).toDateString() === key,
-                            )
-                            .reduce((s, h) => s + h.delta, 0),
-                    };
-                });
-                const canvas = document.getElementById('chart'),
-                    ctx = canvas.getContext('2d');
-                const W = canvas.offsetWidth || 360,
-                    H = canvas.offsetHeight || 120;
-                canvas.width = W * 2;
-                canvas.height = H * 2;
-                ctx.scale(2, 2);
-                ctx.clearRect(0, 0, W, H);
-                const maxAbs = Math.max(...days.map((d) => Math.abs(d.bal)), 1);
-                const pad = { t: 10, b: 24, l: 8, r: 8 },
-                    bw = (W - pad.l - pad.r) / 7,
-                    midY = pad.t + (H - pad.t - pad.b) / 2;
-                ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([4, 4]);
-                ctx.beginPath();
-                ctx.moveTo(pad.l, midY);
-                ctx.lineTo(W - pad.r, midY);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                days.forEach((d, i) => {
-                    const x = pad.l + i * bw + bw * 0.2,
-                        bw2 = bw * 0.6,
-                        barH = (Math.abs(d.bal) / maxAbs) * (midY - pad.t - 4);
-                    const isPos = d.bal >= 0,
-                        y = isPos ? midY - barH : midY,
-                        r = 3;
-                    ctx.fillStyle = isPos
-                        ? 'rgba(62,207,142,0.7)'
-                        : 'rgba(248,108,108,0.7)';
-                    ctx.beginPath();
-                    ctx.moveTo(x + r, y);
-                    ctx.lineTo(x + bw2 - r, y);
-                    ctx.quadraticCurveTo(
-                        x + bw2,
-                        y,
-                        x + bw2,
-                        y + (isPos ? r : -r),
-                    );
-                    if (isPos) {
-                        ctx.lineTo(x + bw2, y + barH);
-                        ctx.lineTo(x, y + barH);
-                        ctx.lineTo(x, y + r);
-                    } else {
-                        ctx.lineTo(x + bw2, y + barH - r);
-                        ctx.quadraticCurveTo(
-                            x + bw2,
-                            y + barH,
-                            x + bw2 - r,
-                            y + barH,
-                        );
-                        ctx.lineTo(x + r, y + barH);
-                        ctx.quadraticCurveTo(x, y + barH, x, y + barH - r);
-                        ctx.lineTo(x, y - r);
-                    }
-                    ctx.quadraticCurveTo(x, y, x + r, y);
-                    ctx.fill();
-                    ctx.fillStyle = 'rgba(120,117,140,0.8)';
-                    ctx.font = '10px JetBrains Mono';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(d.label, x + bw2 / 2, H - 6);
-                });
-            }
+function renderChart() {
+  const days = Array.from({length:7},(_,i)=>{
+    const d=new Date(); d.setDate(d.getDate()-(6-i));
+    const key=d.toDateString();
+    return {label:d.toLocaleDateString('ru',{weekday:'short'}),
+      bal:history.filter(h=>new Date(h.ts).toDateString()===key).reduce((s,h)=>s+h.delta,0)};
+  });
+  const canvas=document.getElementById('chart'), ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||360, H=canvas.offsetHeight||120;
+  canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+  ctx.clearRect(0,0,W,H);
+  const maxAbs=Math.max(...days.map(d=>Math.abs(d.bal)),1);
+  const pad={t:10,b:24,l:8,r:8}, bw=(W-pad.l-pad.r)/7, midY=pad.t+(H-pad.t-pad.b)/2;
+  ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pad.l,midY); ctx.lineTo(W-pad.r,midY); ctx.stroke(); ctx.setLineDash([]);
+  days.forEach((d,i)=>{
+    const x=pad.l+i*bw+bw*.2, bw2=bw*.6, barH=Math.abs(d.bal)/maxAbs*(midY-pad.t-4);
+    const isPos=d.bal>=0, y=isPos?midY-barH:midY, r=3;
+    ctx.fillStyle=isPos?'rgba(62,207,142,0.7)':'rgba(248,108,108,0.7)';
+    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+bw2-r,y);
+    ctx.quadraticCurveTo(x+bw2,y,x+bw2,y+(isPos?r:-r));
+    if(isPos){ctx.lineTo(x+bw2,y+barH);ctx.lineTo(x,y+barH);ctx.lineTo(x,y+r);}
+    else{ctx.lineTo(x+bw2,y+barH-r);ctx.quadraticCurveTo(x+bw2,y+barH,x+bw2-r,y+barH);
+      ctx.lineTo(x+r,y+barH);ctx.quadraticCurveTo(x,y+barH,x,y+barH-r);ctx.lineTo(x,y-r);}
+    ctx.quadraticCurveTo(x,y,x+r,y); ctx.fill();
+    ctx.fillStyle='rgba(120,117,140,0.8)'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText(d.label,x+bw2/2,H-6);
+  });
+}
 
-            function renderTopActions() {
-                const map = {};
-                history.forEach((h) => {
-                    if (!map[h.name])
-                        map[h.name] = {
-                            icon: h.icon,
-                            name: h.name,
-                            type: h.type,
-                            seconds: 0,
-                            delta: 0,
-                        };
-                    map[h.name].seconds += h.seconds;
-                    map[h.name].delta += h.delta;
-                });
-                const top = Object.values(map)
-                    .sort((a, b) => b.seconds - a.seconds)
-                    .slice(0, 5);
-                const maxSec = top[0]?.seconds || 1,
-                    c = document.getElementById('top-actions-list');
-                c.innerHTML = '';
-                if (!top.length) {
-                    c.innerHTML =
-                        '<div style="font-size:12px;color:var(--text3);padding:8px 0">Нет данных</div>';
-                    return;
-                }
-                top.forEach((item) => {
-                    const min = Math.round(item.seconds / 60),
-                        pct = (item.seconds / maxSec) * 100;
-                    const color =
-                        item.type === 'good' ? 'var(--good)' : 'var(--bad)';
-                    const div = document.createElement('div');
-                    div.style.cssText = 'margin-bottom:12px';
-                    div.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+function renderTopActions() {
+  const map={};
+  history.forEach(h=>{
+    if(!map[h.name]) map[h.name]={icon:h.icon,name:h.name,type:h.type,seconds:0,delta:0};
+    map[h.name].seconds+=h.seconds; map[h.name].delta+=h.delta;
+  });
+  const top=Object.values(map).sort((a,b)=>b.seconds-a.seconds).slice(0,5);
+  const maxSec=top[0]?.seconds||1, c=document.getElementById('top-actions-list');
+  c.innerHTML='';
+  if(!top.length){c.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0">Нет данных</div>';return;}
+  top.forEach(item=>{
+    const min=Math.round(item.seconds/60), pct=item.seconds/maxSec*100;
+    const color=item.type==='good'?'var(--good)':'var(--bad)';
+    const div=document.createElement('div'); div.style.cssText='margin-bottom:12px';
+    div.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:16px">${item.icon}</span>
         <span style="font-size:12px;font-weight:500">${item.name}</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
         <span style="font-size:11px;color:var(--text3)">${min} мин</span>
-        <span style="font-size:11px;color:${color};font-family:var(--display);font-weight:700">${item.delta >= 0 ? '+' : ''}${item.delta.toFixed(0)} ₿</span>
+        <span style="font-size:11px;color:${color};font-family:var(--display);font-weight:700">${item.delta>=0?'+':''}${item.delta.toFixed(0)} ₿</span>
       </div></div>
       <div style="height:4px;border-radius:2px;background:var(--bg3)">
         <div style="height:100%;border-radius:2px;background:${color};width:${pct}%;transition:width .6s"></div>
       </div>`;
-                    c.appendChild(div);
-                });
-            }
+    c.appendChild(div);
+  });
+}
 
-            function renderHistory() {
-                const list = document.getElementById('history-list'),
-                    empty = document.getElementById('history-empty');
-                list.innerHTML = '';
-                if (!history.length) {
-                    empty.style.display = 'block';
-                    return;
-                }
-                empty.style.display = 'none';
-                history.slice(0, 100).forEach((h) => {
-                    const min = Math.floor(h.seconds / 60),
-                        sec = h.seconds % 60;
-                    const dur = min > 0 ? `${min} мин ${sec} с` : `${sec} с`;
-                    const dt = new Date(h.ts).toLocaleString('ru', {
-                        day: 'numeric',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    });
-                    const div = document.createElement('div');
-                    div.className = 'hist-item';
-                    div.innerHTML = `
+function renderHistory() {
+  const list=document.getElementById('history-list'), empty=document.getElementById('history-empty');
+  list.innerHTML='';
+  if(!history.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  history.slice(0,100).forEach(h=>{
+    const min=Math.floor(h.seconds/60), sec=h.seconds%60;
+    const dur=min>0?`${min} мин ${sec} с`:`${sec} с`;
+    const dt=new Date(h.ts).toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const div=document.createElement('div'); div.className='hist-item';
+    div.innerHTML=`
       <div class="hist-icon">${h.icon}</div>
       <div class="hist-info">
         <div class="hist-name">${h.name}</div>
         <div class="hist-time">${dt} · ${dur}</div>
       </div>
-      <div class="hist-val ${h.delta >= 0 ? 'pos' : 'neg'}">${h.delta >= 0 ? '+' : ''}${h.delta.toFixed(1)}</div>
+      <div class="hist-val ${h.delta>=0?'pos':'neg'}">${h.delta>=0?'+':''}${h.delta.toFixed(1)}</div>
       <div class="hist-edit-icon">✎</div>`;
-                    div.onclick = () => openEditModal(h.id);
-                    list.appendChild(div);
-                });
-            }
+    div.onclick = () => openEditModal(h.id);
+    list.appendChild(div);
+  });
+}
 
-            // ── Settings ──
-            function renderSettings() {
-                const list = document.getElementById('actions-list');
-                list.innerHTML = '';
-                const counts = usageCounts();
-                actions.forEach((a) => {
-                    const cnt = counts[a.name] || 0;
-                    const div = document.createElement('div');
-                    div.className = 'act-item';
-                    div.innerHTML = `
+// ── Settings ──
+function renderSettings() {
+  const list=document.getElementById('actions-list'); list.innerHTML='';
+  const counts = usageCounts();
+  actions.forEach(a=>{
+    const cnt = counts[a.name] || 0;
+    const div=document.createElement('div'); div.className='act-item';
+    div.innerHTML=`
       <div class="act-item-icon">${a.icon}</div>
       <div class="act-item-info">
         <div class="act-item-name">${a.name}</div>
-        <div class="act-item-rate" style="color:${a.type === 'good' ? 'var(--good)' : 'var(--bad)'}">
-          ${a.type === 'good' ? 'Полезное' : 'Вредное'} · ${a.type === 'good' ? '+' : '−'}${a.rate} ₿/мин${cnt ? ' · ' + cnt + '×' : ''}
+        <div class="act-item-rate" style="color:${a.type==='good'?'var(--good)':'var(--bad)'}">
+          ${a.type==='good'?'Полезное':'Вредное'} · ${a.type==='good'?'+':'−'}${a.rate} ₿/мин${cnt?' · '+cnt+'×':''}
         </div>
       </div>
+      <button class="act-item-edit" onclick="openActionModal('${a.id}')">✎</button>
       <button class="act-item-del" onclick="deleteAction('${a.id}')">✕</button>`;
-                    list.appendChild(div);
-                });
+    list.appendChild(div);
+  });
 
-                // Populate manual session action select
-                const sel = document.getElementById('m-action');
-                sel.innerHTML = actions
-                    .map(
-                        (a) =>
-                            `<option value="${a.id}">${a.icon} ${a.name}</option>`,
-                    )
-                    .join('');
-            }
+  // Populate manual session action select
+  const sel = document.getElementById('m-action');
+  sel.innerHTML = actions.map(a =>
+    `<option value="${a.id}">${a.icon} ${a.name}</option>`
+  ).join('');
+}
 
-            function addAction() {
-                const icon =
-                    document.getElementById('f-icon').value.trim() || '⚡';
-                const name = document.getElementById('f-name').value.trim();
-                const type = document.getElementById('f-type').value;
-                const rate =
-                    parseInt(document.getElementById('f-rate').value) || 3;
-                if (!name) {
-                    document.getElementById('f-name').focus();
-                    return;
-                }
-                actions.push({ id: 'a' + Date.now(), icon, name, type, rate });
-                saveActions();
-                document.getElementById('f-icon').value = '';
-                document.getElementById('f-name').value = '';
-                document.getElementById('f-rate').value = '';
-                renderSettings();
-            }
+function addAction() {
+  const icon=document.getElementById('f-icon').value.trim()||'⚡';
+  const name=document.getElementById('f-name').value.trim();
+  const type=document.getElementById('f-type').value;
+  const rate=parseInt(document.getElementById('f-rate').value)||3;
+  if(!name){document.getElementById('f-name').focus();return;}
+  actions.push({id:'a'+Date.now(),icon,name,type,rate});
+  saveActions();
+  document.getElementById('f-icon').value='';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-rate').value='';
+  renderSettings();
+}
 
-            function deleteAction(id) {
-                actions = actions.filter((a) => a.id !== id);
-                saveActions();
-                renderSettings();
-            }
+let editingActionId = null;
 
-            function clearHistory() {
-                if (!confirm('Сбросить всю историю сессий?')) return;
-                history = [];
-                saveHistory();
-                renderHome();
-            }
+function openActionModal(id) {
+  const a = actions.find(x => x.id === id);
+  if (!a) return;
+  editingActionId = id;
+  document.getElementById('ea-icon').value = a.icon;
+  document.getElementById('ea-name').value = a.name;
+  document.getElementById('ea-type').value = a.type;
+  document.getElementById('ea-rate').value = a.rate;
+  document.getElementById('action-modal').style.display = 'flex';
+}
 
-            // ── Init ──
-            renderHome();
-            renderFooter();
-            if ('serviceWorker' in navigator)
-                navigator.serviceWorker.register('sw.js').catch(() => {});
-        </script>
-    </body>
+function closeActionModal(e) {
+  if (e && e.target !== document.getElementById('action-modal')) return;
+  document.getElementById('action-modal').style.display = 'none';
+  editingActionId = null;
+}
+
+function saveAction() {
+  const icon = document.getElementById('ea-icon').value.trim() || '⚡';
+  const name = document.getElementById('ea-name').value.trim();
+  const type = document.getElementById('ea-type').value;
+  const rate = parseInt(document.getElementById('ea-rate').value) || 3;
+  if (!name) { document.getElementById('ea-name').focus(); return; }
+  const idx = actions.findIndex(a => a.id === editingActionId);
+  if (idx === -1) return;
+  actions[idx] = { ...actions[idx], icon, name, type, rate };
+  saveActions();
+  document.getElementById('action-modal').style.display = 'none';
+  editingActionId = null;
+  renderSettings();
+  renderHome();
+}
+
+function deleteAction(id) {
+  actions=actions.filter(a=>a.id!==id);
+  saveActions(); renderSettings();
+}
+
+function clearHistory() {
+  if(!confirm('Сбросить всю историю сессий?')) return;
+  history=[]; saveHistory(); renderHome();
+}
+
+// ── Backup ──
+function exportBackup() {
+  const data = { version: APP_VERSION, exportedAt: new Date().toISOString(), actions, history };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `balance-backup-${date}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importBackup(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.actions || !data.history) throw new Error('Неверный формат');
+      if (!confirm(`Восстановить резервную копию от ${data.exportedAt?.slice(0,10)||'?'}?\nТекущие данные будут заменены.`)) return;
+      actions = data.actions; history = data.history;
+      saveActions(); saveHistory();
+      renderHome(); renderSettings();
+      alert('Данные восстановлены.');
+    } catch(err) { alert('Ошибка чтения файла: ' + err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ── Init ──
+renderHome();
+renderFooter();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE = 'balance-v2.0';
+const CACHE = 'v3.0';
 const ASSETS = ['/', '/index.html'];
 
 self.addEventListener('install', (e) => {
