@@ -533,6 +533,7 @@
                 border-radius: 16px;
                 margin: 0 16px;
                 padding: 16px;
+                overflow: hidden;
             }
             .add-form label {
                 font-size: 10px;
@@ -545,6 +546,7 @@
             .add-form input,
             .add-form select {
                 width: 100%;
+                max-width: 100%;
                 background: var(--bg3);
                 border: 1px solid var(--border);
                 border-radius: 10px;
@@ -554,6 +556,14 @@
                 font-size: 13px;
                 outline: none;
                 margin-bottom: 12px;
+                display: block;
+                min-width: 0;
+            }
+            .add-form input[type='datetime-local'] {
+                font-size: 12px;
+                padding: 10px 8px;
+                -webkit-appearance: none;
+                appearance: none;
             }
             .add-form input:focus,
             .add-form select:focus {
@@ -563,6 +573,42 @@
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
+            }
+            .modal input[type='datetime-local'] {
+                font-size: 12px;
+                padding: 10px 8px;
+                -webkit-appearance: none;
+                appearance: none;
+                max-width: 100%;
+                min-width: 0;
+            }
+            .modal-btns {
+                display: flex;
+                gap: 8px;
+                margin-top: 20px;
+            }
+            .modal-btns button {
+                flex: 1;
+                padding: 13px;
+                border-radius: 12px;
+                font-family: var(--mono);
+                font-size: 12px;
+                cursor: pointer;
+                border: none;
+                transition: all 0.15s;
+            }
+            .btn-modal-ok {
+                background: var(--accent);
+                color: #fff;
+            }
+            .btn-modal-del {
+                background: var(--bad-bg);
+                color: var(--bad);
+                border: 1px solid rgba(248, 108, 108, 0.3) !important;
+            }
+            .btn-modal-cancel {
+                background: var(--bg3);
+                color: var(--text2);
             }
             .btn-add {
                 width: 100%;
@@ -632,6 +678,7 @@
                 width: 100%;
                 max-width: 430px;
                 border-top: 1px solid var(--border2);
+                overflow: hidden;
             }
             .modal h3 {
                 font-family: var(--display);
@@ -655,6 +702,8 @@
             .modal input,
             .modal select {
                 width: 100%;
+                max-width: 100%;
+                min-width: 0;
                 background: var(--bg3);
                 border: 1px solid var(--border);
                 border-radius: 10px;
@@ -663,38 +712,17 @@
                 font-family: var(--mono);
                 font-size: 13px;
                 outline: none;
+                display: block;
+            }
+            .modal input[type='datetime-local'] {
+                font-size: 12px;
+                padding: 10px 8px;
+                -webkit-appearance: none;
+                appearance: none;
             }
             .modal input:focus,
             .modal select:focus {
                 border-color: var(--accent);
-            }
-            .modal-btns {
-                display: flex;
-                gap: 8px;
-                margin-top: 20px;
-            }
-            .modal-btns button {
-                flex: 1;
-                padding: 13px;
-                border-radius: 12px;
-                font-family: var(--mono);
-                font-size: 12px;
-                cursor: pointer;
-                border: none;
-                transition: all 0.15s;
-            }
-            .btn-modal-ok {
-                background: var(--accent);
-                color: #fff;
-            }
-            .btn-modal-del {
-                background: var(--bad-bg);
-                color: var(--bad);
-                border: 1px solid rgba(248, 108, 108, 0.3) !important;
-            }
-            .btn-modal-cancel {
-                background: var(--bg3);
-                color: var(--text2);
             }
 
             /* Footer */
